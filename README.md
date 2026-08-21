@@ -172,7 +172,7 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
   --namespace earthgravity
 ```
 
-Both charts default to two non-root replicas with probes, resources, read-only root filesystems, disruption budgets, and optional ingress/HPA. The REST/MCP service is stateless and needs no sticky sessions or persistent volume. The WebApp uses server-side Blazor, so its Kubernetes Service uses `ClientIP` affinity to keep a Blazor circuit on one replica.
+Both charts follow the established `GravitationalField` chart pattern: one replica, the Docker Hub `stable` tag with `Always` pull policy, DigiWells ingress hosts, an optional HPA, optional health probes, configurable security/resources, and a Helm connection test. EarthGravity is stateless, so the Service deliberately omits the original persistence volume. The charts do not create PodDisruptionBudgets and therefore do not require `policy/v1` permissions. The WebApp retains `ClientIP` affinity because server-side Blazor maintains a circuit per user.
 
 The charts pull their default images from `docker.io/digiwells`. No pull secret is required when the Docker Hub repositories are public. For private repositories, create a Kubernetes Docker-registry secret and pass it to both charts, for example with `--set 'imagePullSecrets[0].name=dockerhub-credentials'`.
 

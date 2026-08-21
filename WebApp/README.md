@@ -76,6 +76,6 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
   --namespace earthgravity
 ```
 
-Install the Service chart first. The WebApp chart defaults to two replicas, ClientIP affinity, probes, resource constraints, a read-only root filesystem, an ephemeral data-protection directory, a disruption budget, and optional ingress/HPA.
+Install the Service chart first. Following the original Gravitational Field WebApp chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates no PodDisruptionBudget. The EarthGravity chart additionally retains ClientIP affinity and an ephemeral data-protection directory for server-side Blazor.
 
 The chart defaults to `docker.io/digiwells/earthgravity-webapp`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.

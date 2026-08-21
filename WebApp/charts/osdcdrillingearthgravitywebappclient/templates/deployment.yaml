@@ -18,34 +18,32 @@ spec:
         {{- include "earthgravitywebapp.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{- end }}
     spec:
-      serviceAccountName: {{ include "earthgravitywebapp.serviceAccountName" . }}
-      automountServiceAccountToken: false
-      securityContext:
-        runAsNonRoot: true
-        seccompProfile: { type: RuntimeDefault }
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets: {{ toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "earthgravitywebapp.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: webapp
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Chart.Name }}
           securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities: { drop: ["ALL"] }
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - { name: ASPNETCORE_URLS, value: "http://+:8080" }
             - { name: EarthGravityHostURL, value: {{ .Values.configuration.earthGravityHostURL | quote }} }
             - { name: UnitConversionHostURL, value: {{ .Values.configuration.unitConversionHostURL | quote }} }
           ports:
             - { name: http, containerPort: 8080 }
+          {{- if .Values.probes.enabled }}
           readinessProbe:
             httpGet: { path: /EarthGravity/webapp/health/ready, port: http }
             initialDelaySeconds: 5
           livenessProbe:
             httpGet: { path: /EarthGravity/webapp/health/live, port: http }
             initialDelaySeconds: 10
+          {{- end }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - { name: tmp, mountPath: /tmp }

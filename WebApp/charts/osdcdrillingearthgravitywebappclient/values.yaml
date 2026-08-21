@@ -1,43 +1,59 @@
-replicaCount: 2
+replicaCount: 1
+nameOverride: "osdcdrillingearthgravitywebappclient"
 fullnameOverride: osdcearthgravitywebappclient
 image:
   repository: docker.io/digiwells/earthgravity-webapp
-  tag: "1.0.0"
-  pullPolicy: IfNotPresent
+  tag: "stable"
+  pullPolicy: Always
 imagePullSecrets: []
 serviceAccount:
   create: true
+  annotations: {}
   name: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
 service:
   type: ClusterIP
   port: 80
   sessionAffinity: ClientIP
+  annotations:
+    description: "A web application for evaluating EGM96 Earth gravity"
 configuration:
   earthGravityHostURL: http://osdcearthgravityservice/
   unitConversionHostURL: http://osdcunitconversionservice/
-resources:
-  requests: { cpu: 100m, memory: 192Mi }
-  limits: { cpu: 500m, memory: 512Mi }
+resources: {}
 autoscaling:
   enabled: false
-  minReplicas: 2
-  maxReplicas: 6
-  targetCPUUtilizationPercentage: 70
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: earthgravity.local
-      paths:
-        - path: /EarthGravity/webapp
-          pathType: Prefix
-  tls: []
-podDisruptionBudget:
   enabled: true
-  minAvailable: 1
-podAnnotations: {}
-podLabels: {}
+  className: public
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+    - host: localhost
+      paths:
+        - path: /(?i)earthgravity/webapp
+          pathType: ImplementationSpecific
+    - host: dev.digiwells.no
+      paths:
+        - path: /(?i)earthgravity/webapp
+          pathType: ImplementationSpecific
+    - host: app.digiwells.no
+      paths:
+        - path: /(?i)earthgravity/webapp
+          pathType: ImplementationSpecific
+    - host: awe.web.intra.norceresearch.no
+      paths:
+        - path: /(?i)earthgravity/webapp
+          pathType: ImplementationSpecific
+  tls: []
+probes:
+  enabled: false
 nodeSelector: {}
 tolerations: []
 affinity: {}

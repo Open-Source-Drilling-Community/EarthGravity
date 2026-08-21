@@ -78,6 +78,6 @@ helm upgrade --install earthgravity-service Service/charts/osdcdrillingearthgrav
   --namespace earthgravity --create-namespace
 ```
 
-The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. The chart uses two replicas, probes, resource constraints, a read-only root filesystem, non-root execution, a disruption budget, and optional ingress/HPA. It requires no volume or sticky session.
+The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. Following the original Gravitational Field chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates no PodDisruptionBudget and requires no persistence volume or sticky session.
 
 The chart defaults to `docker.io/digiwells/earthgravity-service`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.

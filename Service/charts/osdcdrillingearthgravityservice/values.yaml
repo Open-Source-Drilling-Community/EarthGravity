@@ -1,44 +1,60 @@
-replicaCount: 2
+replicaCount: 1
+nameOverride: "osdcdrillingearthgravityservice"
 fullnameOverride: osdcearthgravityservice
 image:
   repository: docker.io/digiwells/earthgravity-service
-  tag: "1.0.0"
-  pullPolicy: IfNotPresent
+  tag: "stable"
+  pullPolicy: Always
 imagePullSecrets: []
 serviceAccount:
   create: true
-  name: ""
-service:
-  type: ClusterIP
-  port: 80
-earthGravity:
-  maximumPositionsPerRequest: 10000
-resources:
-  requests: { cpu: 100m, memory: 256Mi }
-  limits: { cpu: "1", memory: 1Gi }
-autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
-ingress:
-  enabled: false
-  className: ""
   annotations: {}
-  hosts:
-    - host: earthgravity.local
-      paths:
-        - path: /EarthGravity/api
-          pathType: Prefix
-  tls: []
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 1
+  name: ""
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: /EarthGravity/api/metrics
   prometheus.io/port: "8080"
 podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 80
+  annotations:
+    description: "A stateless microservice for evaluating EGM96 Earth gravity"
+earthGravity:
+  maximumPositionsPerRequest: 10000
+resources: {}
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+ingress:
+  enabled: true
+  className: public
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+    - host: localhost
+      paths:
+        - path: /(?i)earthgravity/api
+          pathType: ImplementationSpecific
+    - host: dev.digiwells.no
+      paths:
+        - path: /(?i)earthgravity/api
+          pathType: ImplementationSpecific
+    - host: app.digiwells.no
+      paths:
+        - path: /(?i)earthgravity/api
+          pathType: ImplementationSpecific
+    - host: awe.web.intra.norceresearch.no
+      paths:
+        - path: /(?i)earthgravity/api
+          pathType: ImplementationSpecific
+  tls: []
+probes:
+  enabled: false
 nodeSelector: {}
 tolerations: []
 affinity: {}
