@@ -1,0 +1,43 @@
+replicaCount: 2
+fullnameOverride: osdcearthgravitywebappclient
+image:
+  repository: ghcr.io/open-source-drilling-community/earthgravity-webapp
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+serviceAccount:
+  create: true
+  name: ""
+service:
+  type: ClusterIP
+  port: 80
+  sessionAffinity: ClientIP
+configuration:
+  earthGravityHostURL: http://osdcearthgravityservice/
+  unitConversionHostURL: http://osdcunitconversionservice/
+resources:
+  requests: { cpu: 100m, memory: 192Mi }
+  limits: { cpu: 500m, memory: 512Mi }
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: earthgravity.local
+      paths:
+        - path: /EarthGravity/webapp
+          pathType: Prefix
+  tls: []
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

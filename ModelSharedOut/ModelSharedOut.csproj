@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>OSDC.Drilling.EarthGravity.ModelShared</RootNamespace>
+    <Title>Auto-generation of the OSDC Earth Gravity distributed shared model and API client</Title>
+    <Authors>Eric Cayeux</Authors>
+    <Company>NORCE Research</Company>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.29" />
+    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="14.6.2" />
+  </ItemGroup>
+  <ItemGroup Condition="!Exists('EarthGravityMergedModel.cs')">
+    <Compile Remove="PseudoConstructors.cs" />
+  </ItemGroup>
+</Project>

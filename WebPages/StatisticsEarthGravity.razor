@@ -1,0 +1,27 @@
+@page "/StatisticsEarthGravity"
+@inject IEarthGravityAPIUtils Api
+
+<MudPaper Class="pa-6 mt-4" Elevation="2">
+    <MudText Typo="Typo.h4">Usage statistics</MudText>
+    <MudText Typo="Typo.body2" Class="mb-4">Counters are in-memory and scoped to the service replica selected by Kubernetes.</MudText>
+    @if (statistics == null)
+    {
+        <MudProgressLinear Indeterminate="true" />
+    }
+    else
+    {
+        <MudSimpleTable>
+            <tbody>
+                <tr><th>REST evaluations</th><td>@statistics.RestEvaluations</td></tr>
+                <tr><th>MCP evaluations</th><td>@statistics.MCPEvaluations</td></tr>
+                <tr><th>Failed evaluations</th><td>@statistics.FailedEvaluations</td></tr>
+                <tr><th>Positions evaluated</th><td>@statistics.PositionsEvaluated</td></tr>
+            </tbody>
+        </MudSimpleTable>
+    }
+</MudPaper>
+
+@code {
+    private UsageStatisticsEarthGravity? statistics;
+    protected override async Task OnInitializedAsync() => statistics = await Api.ClientEarthGravity.GetEarthGravityUsageStatisticsAsync();
+}

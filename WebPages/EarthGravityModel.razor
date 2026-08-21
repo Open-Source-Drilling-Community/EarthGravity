@@ -1,0 +1,29 @@
+@page "/EarthGravityModel"
+@inject IEarthGravityAPIUtils Api
+
+<MudPaper Class="pa-6 mt-4" Elevation="2">
+    <MudText Typo="Typo.h4">Loaded gravity model</MudText>
+    @if (model == null)
+    {
+        <MudProgressLinear Indeterminate="true" Class="mt-4" />
+    }
+    else
+    {
+        <MudSimpleTable Class="mt-4">
+            <tbody>
+                <tr><th>Name</th><td>@model.Name</td></tr>
+                <tr><th>ID</th><td>@model.ID</td></tr>
+                <tr><th>Publisher</th><td>@model.Publisher</td></tr>
+                <tr><th>Release</th><td>@model.ReleaseDate</td></tr>
+                <tr><th>Degree/order</th><td>@model.Degree / @model.Order</td></tr>
+                <tr><th>Reference ellipsoid</th><td>@model.ReferenceEllipsoid</td></tr>
+                <tr><th>Coefficient SHA-256</th><td class="hash">@model.CoefficientSHA256</td></tr>
+            </tbody>
+        </MudSimpleTable>
+    }
+</MudPaper>
+
+@code {
+    private EarthGravityModelInfo? model;
+    protected override async Task OnInitializedAsync() => model = await Api.ClientEarthGravity.GetEarthGravityModelInfoAsync();
+}

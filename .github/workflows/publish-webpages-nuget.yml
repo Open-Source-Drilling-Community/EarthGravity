@@ -1,0 +1,31 @@
+name: Publish WebPages NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version to publish
+        required: true
+        type: string
+  push:
+    tags: ['webpages-v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Resolve package version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "PACKAGE_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+          else
+            echo "PACKAGE_VERSION=${GITHUB_REF_NAME#webpages-v}" >> "$GITHUB_ENV"
+          fi
+      - run: dotnet restore WebPages/WebPages.csproj
+      - run: dotnet build WebPages/WebPages.csproj --configuration Release --no-restore -p:PackageVersion=${{ env.PACKAGE_VERSION }}
+      - run: dotnet nuget push "WebPages/bin/Release/OSDC.Drilling.EarthGravity.WebPages.${{ env.PACKAGE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate

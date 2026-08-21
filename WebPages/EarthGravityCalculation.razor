@@ -1,0 +1,117 @@
+@page "/EarthGravityCalculation"
+@inject ILogger<EarthGravityCalculation> Logger
+@inject ISnackbar Snackbar
+@inject IEarthGravityAPIUtils Api
+
+<MudUnitAndReferenceChoiceTag HttpHost="@Api.HostNameUnitConversion"
+                              HttpBasePath="@Api.HostBasePathUnitConversion"
+                              HttpController="UnitSystem/"
+                              UnitSystemName="@DataUtils.UnitAndReferenceParameters.UnitSystemName"
+                              UnitSystemNameChanged="@DataUtils.UpdateUnitSystemName">
+    <MudPaper Class="pa-6 mt-4" Elevation="2">
+        <MudText Typo="Typo.h4" Class="mb-2">Earth gravity evaluation</MudText>
+        <MudText Typo="Typo.body2" Class="mb-5">
+            Internally and over the API, latitude and longitude are SI radians. Depth is SI metres, positive downward from the WGS84 reference ellipsoid; negative depth is above the ellipsoid. Displayed units follow the selected OSDC unit system.
+        </MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudInputAngleWithUnitAdornment QuantityLabel="Sexagesimal latitude (WGS84)"
+                                                SIValueNullable="latitude"
+                                                SIValueNullableChanged="@(value => latitude = value)" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudInputWithUnitAdornment QuantityName="PlaneAngleGeodesic"
+                                           QuantityLabel="Decimal latitude (WGS84)"
+                                           SIValueNullable="latitude"
+                                           SIValueNullableChanged="@(value => latitude = value)" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudInputAngleWithUnitAdornment QuantityLabel="Sexagesimal longitude (WGS84)"
+                                                SIValueNullable="longitude"
+                                                SIValueNullableChanged="@(value => longitude = value)" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudInputWithUnitAdornment QuantityName="PlaneAngleGeodesic"
+                                           QuantityLabel="Decimal longitude (WGS84)"
+                                           SIValueNullable="longitude"
+                                           SIValueNullableChanged="@(value => longitude = value)" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudInputWithUnitAdornment QuantityName="DepthDrilling"
+                                           QuantityLabel="Depth below WGS84 ellipsoid"
+                                           SIValueNullable="depth"
+                                           SIValueNullableChanged="@(value => depth = value)" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EvaluateAsync" Disabled="evaluating">Evaluate</MudButton>
+                @if (evaluating)
+                {
+                    <MudProgressCircular Class="ml-4" Indeterminate="true" Size="Size.Small" />
+                }
+            </MudItem>
+        </MudGrid>
+
+        @if (result != null)
+        {
+            <MudDivider Class="my-5" />
+            <MudText Typo="Typo.h5" Class="mb-3">Local east-north-up gravity vector</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="East" ReadOnly="true" SIValueNullable="result.Gravity.East" /></MudItem>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="North" ReadOnly="true" SIValueNullable="result.Gravity.North" /></MudItem>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Up" ReadOnly="true" SIValueNullable="result.Gravity.Up" /></MudItem>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Magnitude" ReadOnly="true" SIValueNullable="result.Gravity.Magnitude" /></MudItem>
+            </MudGrid>
+            <MudText Typo="Typo.body2" Class="mt-4">Total potential: @result.Gravity.TotalPotential.ToString("G12") m²/s² (SI)</MudText>
+            <MudText Typo="Typo.caption">Model: @model?.Name (@model?.ID), degree/order @model?.Degree/@model?.Order</MudText>
+        }
+    </MudPaper>
+</MudUnitAndReferenceChoiceTag>
+
+@code {
+    private double? latitude;
+    private double? longitude;
+    private double? depth;
+    private bool evaluating;
+    private EarthGravitySample? result;
+    private EarthGravityModelInfo? model;
+
+    private async Task EvaluateAsync()
+    {
+        if (latitude is null || longitude is null || depth is null)
+        {
+            Snackbar.Add("Latitude, longitude, and depth are required.", Severity.Warning);
+            return;
+        }
+        if (!double.IsFinite(latitude.Value) || latitude < -Math.PI / 2 || latitude > Math.PI / 2 ||
+            !double.IsFinite(longitude.Value) || longitude < -Math.PI || longitude > Math.PI || !double.IsFinite(depth.Value))
+        {
+            Snackbar.Add("The SI latitude, longitude, or depth is outside the supported range.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            evaluating = true;
+            var request = new EarthGravityEvaluationRequest
+            {
+                Positions = new List<EarthGravityPosition>
+                {
+                    new() { Latitude = latitude.Value, Longitude = longitude.Value, Depth = depth.Value }
+                }
+            };
+            EarthGravityEvaluationResponse response = await Api.ClientEarthGravity.EvaluateEarthGravityAsync(request);
+            result = response.Samples?.FirstOrDefault();
+            model = response.Model;
+            Snackbar.Add("Earth gravity evaluation completed.", Severity.Success);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, "Earth gravity evaluation failed");
+            Snackbar.Add("Earth gravity evaluation failed: " + exception.Message, Severity.Error);
+        }
+        finally
+        {
+            evaluating = false;
+        }
+    }
+}

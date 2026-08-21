@@ -1,0 +1,49 @@
+name: Build, generate shared model, and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore local tools
+        run: dotnet tool restore
+      - name: Build service for OpenAPI generation
+        run: dotnet build Service/Service.csproj --configuration Release
+      - name: Regenerate distributed shared model
+        run: |
+          dotnet swagger tofile --output ModelSharedOut/json-schemas/EarthGravityFullName.json Service/bin/Release/net8.0/Service.dll v1
+          dotnet run --project ModelSharedOut/ModelSharedOut.csproj --configuration Release
+      - name: Verify generated contracts are committed
+        run: git diff --exit-code -- ModelSharedOut/EarthGravityMergedModel.cs ModelSharedOut/json-schemas/EarthGravityFullName.json Service/wwwroot/json-schema/EarthGravityMergedModel.json
+      - name: Build solution
+        run: dotnet build EarthGravity.sln --configuration Release --no-restore
+      - name: Test solution
+        run: dotnet test EarthGravity.sln --configuration Release --no-build --logger "trx;LogFileName=tests.trx" --collect "XPlat Code Coverage"
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/**'
+
+  helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm lint Service/charts/osdcdrillingearthgravityservice
+      - run: helm lint WebApp/charts/osdcdrillingearthgravitywebappclient
+      - run: helm template earthgravity-service Service/charts/osdcdrillingearthgravityservice --set ingress.enabled=true > service.yaml
+      - run: helm template earthgravity-webapp WebApp/charts/osdcdrillingearthgravitywebappclient --set ingress.enabled=true > webapp.yaml

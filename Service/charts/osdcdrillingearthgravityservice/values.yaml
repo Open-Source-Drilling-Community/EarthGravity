@@ -1,0 +1,44 @@
+replicaCount: 2
+fullnameOverride: osdcearthgravityservice
+image:
+  repository: ghcr.io/open-source-drilling-community/earthgravity-service
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+serviceAccount:
+  create: true
+  name: ""
+service:
+  type: ClusterIP
+  port: 80
+earthGravity:
+  maximumPositionsPerRequest: 10000
+resources:
+  requests: { cpu: 100m, memory: 256Mi }
+  limits: { cpu: "1", memory: 1Gi }
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: earthgravity.local
+      paths:
+        - path: /EarthGravity/api
+          pathType: Prefix
+  tls: []
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/path: /EarthGravity/api/metrics
+  prometheus.io/port: "8080"
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

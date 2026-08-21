@@ -1,0 +1,6 @@
+apiVersion: v2
+name: osdcdrillingearthgravityservice
+description: Stateless OSDC Earth Gravity REST and MCP service
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

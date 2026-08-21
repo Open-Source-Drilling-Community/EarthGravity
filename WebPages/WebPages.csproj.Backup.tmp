@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <AssemblyName>OSDC.Drilling.EarthGravity.WebPages</AssemblyName>
+    <RootNamespace>OSDC.Drilling.EarthGravity.WebPages</RootNamespace>
+    <PackageId>OSDC.Drilling.EarthGravity.WebPages</PackageId>
+    <Title>OSDC.Drilling.EarthGravity.WebPages</Title>
+    <Authors>Eric Cayeux</Authors>
+    <Description>Reusable Blazor pages for stateless OSDC Earth Gravity evaluation with OSDC unit-system support.</Description>
+    <PackageTags>earthgravity;drilling;blazor;razor;mudblazor;osdc</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Open-Source-Drilling-Community/EarthGravity</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>NORCE Research</Company>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="8.14.0" />
+    <PackageReference Include="OSDC.DotnetLibraries.Drilling.WebAppUtils" Version="1.1.2" />
+    <PackageReference Include="OSDC.UnitConversion.DrillingRazorMudComponents" Version="3.3.47" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ModelSharedOut\EarthGravityMergedModel.cs" Link="GeneratedDtos\EarthGravityMergedModel.cs" />
+    <Compile Include="..\ModelSharedOut\PseudoConstructors.cs" Link="GeneratedDtos\PseudoConstructors.cs" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

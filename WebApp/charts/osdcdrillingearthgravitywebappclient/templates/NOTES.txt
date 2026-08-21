@@ -1,0 +1,2 @@
+Web application: /EarthGravity/webapp
+The Service uses ClientIP affinity because server-side Blazor maintains a circuit per user.

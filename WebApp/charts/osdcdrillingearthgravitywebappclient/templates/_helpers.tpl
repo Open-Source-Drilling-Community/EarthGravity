@@ -1,0 +1,14 @@
+{{- define "earthgravitywebapp.name" -}}{{ .Chart.Name | trunc 63 | trimSuffix "-" }}{{- end }}
+{{- define "earthgravitywebapp.fullname" -}}{{ default (printf "%s-%s" .Release.Name .Chart.Name) .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}{{- end }}
+{{- define "earthgravitywebapp.labels" -}}
+helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" }}
+app.kubernetes.io/name: {{ include "earthgravitywebapp.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+{{- define "earthgravitywebapp.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "earthgravitywebapp.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- define "earthgravitywebapp.serviceAccountName" -}}{{ if .Values.serviceAccount.create }}{{ default (include "earthgravitywebapp.fullname" .) .Values.serviceAccount.name }}{{ else }}{{ default "default" .Values.serviceAccount.name }}{{ end }}{{- end }}
