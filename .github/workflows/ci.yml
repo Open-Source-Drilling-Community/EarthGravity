@@ -19,8 +19,10 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore local tools
         run: dotnet tool restore
+      - name: Restore solution
+        run: dotnet restore EarthGravity.sln
       - name: Build service for OpenAPI generation
-        run: dotnet build Service/Service.csproj --configuration Release
+        run: dotnet build Service/Service.csproj --configuration Release --no-restore
       - name: Regenerate distributed shared model
         run: |
           dotnet swagger tofile --output ModelSharedOut/json-schemas/EarthGravityFullName.json Service/bin/Release/net8.0/Service.dll v1

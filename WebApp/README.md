@@ -65,6 +65,8 @@ docker run --rm -p 8081:8080 \
 
 Open `http://localhost:8081/EarthGravity/webapp`. The image runs as the non-root .NET `app` user.
 
+The publication workflow pushes this image to `docker.io/digiwells/earthgravity-webapp` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+
 ## Kubernetes
 
 The chart is `charts/osdcdrillingearthgravitywebappclient`:
@@ -75,3 +77,5 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
 ```
 
 Install the Service chart first. The WebApp chart defaults to two replicas, ClientIP affinity, probes, resource constraints, a read-only root filesystem, an ephemeral data-protection directory, a disruption budget, and optional ingress/HPA.
+
+The chart defaults to `docker.io/digiwells/earthgravity-webapp`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.

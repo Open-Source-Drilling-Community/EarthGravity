@@ -149,6 +149,13 @@ docker build -f WebApp/Dockerfile -t earthgravity-webapp .
 
 Both final images use the non-root `app` user from the .NET 8 runtime image and listen on container port 8080. The Service image includes the EGM96 model files.
 
+GitHub Actions publishes the images to the `digiwells` organization on Docker Hub:
+
+- `docker.io/digiwells/earthgravity-service`
+- `docker.io/digiwells/earthgravity-webapp`
+
+Configure the GitHub Actions repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`. The username must belong to a Docker Hub account with permission to push to the `digiwells` organization; the token must be a Docker Hub personal access token with write permission. Do not store a Docker Hub password in the repository.
+
 ## Kubernetes
 
 Each deployable project owns its Helm chart:
@@ -167,8 +174,10 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
 
 Both charts default to two non-root replicas with probes, resources, read-only root filesystems, disruption budgets, and optional ingress/HPA. The REST/MCP service is stateless and needs no sticky sessions or persistent volume. The WebApp uses server-side Blazor, so its Kubernetes Service uses `ClientIP` affinity to keep a Blazor circuit on one replica.
 
+The charts pull their default images from `docker.io/digiwells`. No pull secret is required when the Docker Hub repositories are public. For private repositories, create a Kubernetes Docker-registry secret and pass it to both charts, for example with `--set 'imagePullSecrets[0].name=dockerhub-credentials'`.
+
 ## Automation and attribution
 
-GitHub Actions build and test the solution, verify generated contracts, lint/render both Helm charts, publish service/WebApp images to GHCR, and publish `OSDC.Drilling.EarthGravity.WebPages` to NuGet when requested or tagged.
+GitHub Actions build and test the solution, verify generated contracts, lint/render both Helm charts, publish service/WebApp images to the `digiwells` organization on Docker Hub, and publish `OSDC.Drilling.EarthGravity.WebPages` to NuGet when requested or tagged.
 
 EGM96 and GeographicLib attribution is recorded in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

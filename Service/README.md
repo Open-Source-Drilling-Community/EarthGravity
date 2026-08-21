@@ -67,6 +67,8 @@ docker run --rm -p 8080:8080 earthgravity-service
 
 The container runs as the non-root .NET `app` user. The API is then available below `http://localhost:8080/EarthGravity/api`.
 
+The publication workflow pushes this image to `docker.io/digiwells/earthgravity-service` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+
 ## Kubernetes
 
 The chart is `charts/osdcdrillingearthgravityservice`:
@@ -77,3 +79,5 @@ helm upgrade --install earthgravity-service Service/charts/osdcdrillingearthgrav
 ```
 
 The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. The chart uses two replicas, probes, resource constraints, a read-only root filesystem, non-root execution, a disruption budget, and optional ingress/HPA. It requires no volume or sticky session.
+
+The chart defaults to `docker.io/digiwells/earthgravity-service`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.
