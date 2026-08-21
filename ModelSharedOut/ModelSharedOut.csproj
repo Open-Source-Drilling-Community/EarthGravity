@@ -10,7 +10,7 @@
     <Company>NORCE Research</Company>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.29" />
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.31" />
     <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="14.6.2" />
   </ItemGroup>
   <ItemGroup Condition="!Exists('EarthGravityMergedModel.cs')">
