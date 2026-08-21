@@ -151,8 +151,8 @@ Both final images use the non-root `app` user from the .NET 8 runtime image and 
 
 GitHub Actions publishes the images to the `digiwells` organization on Docker Hub:
 
-- `docker.io/digiwells/earthgravity-service`
-- `docker.io/digiwells/earthgravity-webapp`
+- `docker.io/digiwells/osdcdrillingearthgravityservice`
+- `docker.io/digiwells/osdcdrillingearthgravitywebappclient`
 
 Configure the GitHub Actions repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`. The username must belong to a Docker Hub account with permission to push to the `digiwells` organization; the token must be a Docker Hub personal access token with write permission. Do not store a Docker Hub password in the repository.
 

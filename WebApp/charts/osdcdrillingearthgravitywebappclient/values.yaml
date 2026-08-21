@@ -2,7 +2,7 @@ replicaCount: 1
 nameOverride: "osdcdrillingearthgravitywebappclient"
 fullnameOverride: osdcearthgravitywebappclient
 image:
-  repository: docker.io/digiwells/earthgravity-webapp
+  repository: docker.io/digiwells/osdcdrillingearthgravitywebappclient
   tag: "stable"
   pullPolicy: Always
 imagePullSecrets: []

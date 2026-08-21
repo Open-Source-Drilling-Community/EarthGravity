@@ -65,7 +65,7 @@ docker run --rm -p 8081:8080 \
 
 Open `http://localhost:8081/EarthGravity/webapp`. The image runs as the non-root .NET `app` user.
 
-The publication workflow pushes this image to `docker.io/digiwells/earthgravity-webapp` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+The publication workflow pushes this image to `docker.io/digiwells/osdcdrillingearthgravitywebappclient` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
 ## Kubernetes
 
@@ -78,4 +78,4 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
 
 Install the Service chart first. Following the original Gravitational Field WebApp chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates no PodDisruptionBudget. The EarthGravity chart additionally retains ClientIP affinity and an ephemeral data-protection directory for server-side Blazor.
 
-The chart defaults to `docker.io/digiwells/earthgravity-webapp`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.
+The chart defaults to `docker.io/digiwells/osdcdrillingearthgravitywebappclient`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.

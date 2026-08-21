@@ -16,10 +16,10 @@ jobs:
       matrix:
         include:
           - component: service
-            image: earthgravity-service
+            image: osdcdrillingearthgravityservice
             dockerfile: Service/Dockerfile
           - component: webapp
-            image: earthgravity-webapp
+            image: osdcdrillingearthgravitywebappclient
             dockerfile: WebApp/Dockerfile
     steps:
       - uses: actions/checkout@v7

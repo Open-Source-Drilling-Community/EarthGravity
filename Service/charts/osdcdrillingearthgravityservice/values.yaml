@@ -2,7 +2,7 @@ replicaCount: 1
 nameOverride: "osdcdrillingearthgravityservice"
 fullnameOverride: osdcearthgravityservice
 image:
-  repository: docker.io/digiwells/earthgravity-service
+  repository: docker.io/digiwells/osdcdrillingearthgravityservice
   tag: "stable"
   pullPolicy: Always
 imagePullSecrets: []

@@ -67,7 +67,7 @@ docker run --rm -p 8080:8080 earthgravity-service
 
 The container runs as the non-root .NET `app` user. The API is then available below `http://localhost:8080/EarthGravity/api`.
 
-The publication workflow pushes this image to `docker.io/digiwells/earthgravity-service` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
+The publication workflow pushes this image to `docker.io/digiwells/osdcdrillingearthgravityservice` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
 ## Kubernetes
 
@@ -80,4 +80,4 @@ helm upgrade --install earthgravity-service Service/charts/osdcdrillingearthgrav
 
 The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. Following the original Gravitational Field chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates no PodDisruptionBudget and requires no persistence volume or sticky session.
 
-The chart defaults to `docker.io/digiwells/earthgravity-service`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.
+The chart defaults to `docker.io/digiwells/osdcdrillingearthgravityservice`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.
