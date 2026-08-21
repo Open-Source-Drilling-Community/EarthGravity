@@ -13,8 +13,8 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - name: Restore local tools
@@ -32,17 +32,18 @@ jobs:
       - name: Test solution
         run: dotnet test EarthGravity.sln --configuration Release --no-build --logger "trx;LogFileName=tests.trx" --collect "XPlat Code Coverage"
       - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: '**/TestResults/**'
+          if-no-files-found: ignore
 
   helm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-helm@v4
+      - uses: actions/checkout@v7
+      - uses: azure/setup-helm@v5
       - run: helm lint Service/charts/osdcdrillingearthgravityservice
       - run: helm lint WebApp/charts/osdcdrillingearthgravitywebappclient
       - run: helm template earthgravity-service Service/charts/osdcdrillingearthgravityservice --set ingress.enabled=true > service.yaml

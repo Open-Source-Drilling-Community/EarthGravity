@@ -46,9 +46,12 @@ internal sealed class McpServerToolAdapter : McpServerTool
 
         try
         {
+            JsonNode? result = await tool_.InvokeAsync(arguments, cancellationToken).ConfigureAwait(false);
             return new CallToolResult
             {
-                StructuredContent = await tool_.InvokeAsync(arguments, cancellationToken).ConfigureAwait(false)
+                StructuredContent = result is null
+                    ? null
+                    : JsonSerializer.SerializeToElement(result, JsonOptions)
             };
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -65,7 +68,7 @@ internal sealed class McpServerToolAdapter : McpServerTool
             return new CallToolResult
             {
                 IsError = true,
-                StructuredContent = problem,
+                StructuredContent = JsonSerializer.SerializeToElement(problem, JsonOptions),
                 Content = { new TextContentBlock { Text = problem.ToJsonString(JsonOptions) } }
             };
         }

@@ -3,12 +3,31 @@ updates:
   - package-ecosystem: nuget
     directory: /
     schedule: { interval: weekly }
+    ignore:
+      # OpenAPI 2.x/3.x changes namespaces and contracts used by both the
+      # Service and ModelSharedOut generator. Migrate these together.
+      - dependency-name: Microsoft.OpenApi
+        update-types: [version-update:semver-major]
+      - dependency-name: Microsoft.OpenApi.Readers
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }
   - package-ecosystem: docker
     directory: /Service
     schedule: { interval: weekly }
+    ignore:
+      # Images must stay aligned with TargetFramework net8.0.
+      - dependency-name: dotnet/sdk
+        update-types: [version-update:semver-major]
+      - dependency-name: dotnet/aspnet
+        update-types: [version-update:semver-major]
   - package-ecosystem: docker
     directory: /WebApp
     schedule: { interval: weekly }
+    ignore:
+      # Images must stay aligned with TargetFramework net8.0.
+      - dependency-name: dotnet/sdk
+        update-types: [version-update:semver-major]
+      - dependency-name: dotnet/aspnet
+        update-types: [version-update:semver-major]
