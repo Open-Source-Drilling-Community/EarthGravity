@@ -6,6 +6,28 @@
     "version": "1.0"
   },
   "paths": {
+    "/EarthGravity": {
+      "get": {
+        "tags": [
+          "EarthGravity"
+        ],
+        "summary": "Returns the loaded EGM96 model information for service discovery.",
+        "description": "This is the microservice entry endpoint. It returns the same model identity and provenance as the ModelInfo endpoint.",
+        "operationId": "GetEarthGravityEntry",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EarthGravityModelInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/EarthGravity/Evaluate": {
       "post": {
         "tags": [

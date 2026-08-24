@@ -29,6 +29,8 @@ The application path is `/EarthGravity/webapp`. The development settings are:
 
 The Earth Gravity URL matches the Service launch profile's HTTP port. The configured Unit Conversion service must be reachable for unit-system discovery and conversion.
 
+The discovery entry URL `/EarthGravity/webapp/EarthGravity` redirects to `/EarthGravity/webapp/Home`. Matching is case-insensitive, and the redirect uses a host-relative location so it works unchanged on localhost and all ingress hosts.
+
 ## Production configuration
 
 The Kubernetes defaults are:

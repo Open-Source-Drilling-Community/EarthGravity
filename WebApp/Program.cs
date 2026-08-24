@@ -41,6 +41,8 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 app.UseRouting();
+app.MapGet("/EarthGravity", () => Results.Redirect("/EarthGravity/webapp/Home"))
+    .ExcludeFromDescription();
 app.MapGet("/health/live", () => Results.Ok(new { Status = "Healthy" })).ExcludeFromDescription();
 app.MapGet("/health/ready", () => Results.Ok(new { Status = "Healthy" })).ExcludeFromDescription();
 app.MapBlazorHub();

@@ -20,6 +20,7 @@ dotnet run --project Service
 
 ## REST and operational endpoints
 
+- `GET /EarthGravity/api/EarthGravity`: microservice discovery entry point returning the loaded EGM96 model information.
 - `POST /EarthGravity/api/EarthGravity/Evaluate`: synchronous batch evaluation.
 - `GET /EarthGravity/api/EarthGravity/ModelInfo`: loaded EGM96 provenance.
 - `GET /EarthGravity/api/EarthGravityUsageStatistics`: in-memory counters for this replica.

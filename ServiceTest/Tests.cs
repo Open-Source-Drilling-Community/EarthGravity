@@ -56,6 +56,21 @@ public class Tests
         Assert.That(exception.StatusCode, Is.EqualTo((int)HttpStatusCode.UnprocessableEntity));
     }
 
+    [TestCase("/EarthGravity/api/EarthGravity")]
+    [TestCase("/earthgravity/api/earthgravity")]
+    public async Task ServiceEntryEndpointReturnsModelInformation(string path)
+    {
+        HttpResponseMessage response = await httpClient_.GetAsync(path);
+        using JsonDocument document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(document.RootElement.GetProperty("ID").GetString(), Is.EqualTo("EGM1996A"));
+            Assert.That(document.RootElement.GetProperty("ReferenceEllipsoid").GetString(), Is.EqualTo("WGS84"));
+        });
+    }
+
     [Test]
     public void UsageStatisticsAreNotRegisteredAsMCPTools()
     {
