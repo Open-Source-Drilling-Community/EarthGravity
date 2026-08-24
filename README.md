@@ -1,9 +1,8 @@
 # OSDC Earth Gravity
 
-**Author:** Eric Cayeux  
-**Company:** NORCE Research
-
 OSDC Earth Gravity is a stateless EGM96 microservice with REST, Model Context Protocol (MCP), a generated shared API client, reusable unit-aware WebPages, and a server-side Blazor WebApp. It follows the established OSDC microservice solution structure while intentionally omitting the database, calculation-order resources, temporary GUID workflow, and CRUD endpoints from `NORCE.Drilling.GravitationalField`.
+
+This project replaces https://github.com/Open-Source-Drilling-Community/GravitationalField. The repository https://github.com/Open-Source-Drilling-Community/GravitationalField is therefore switched to be archived.
 
 ## Solution structure
 
@@ -181,3 +180,6 @@ The charts pull their default images from `docker.io/digiwells`. No pull secret 
 GitHub Actions build and test the solution, verify generated contracts, lint/render both Helm charts, publish service/WebApp images to the `digiwells` organization on Docker Hub, and publish `OSDC.Drilling.EarthGravity.WebPages` to NuGet when requested or tagged.
 
 EGM96 and GeographicLib attribution is recorded in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+**Author:** Eric Cayeux  
+**Company:** NORCE Research
