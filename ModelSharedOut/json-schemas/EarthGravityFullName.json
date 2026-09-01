@@ -34,7 +34,7 @@
           "EarthGravity"
         ],
         "summary": "Synchronously evaluates EGM96 total gravity for WGS84 positions expressed in OSDC SI units.",
-        "description": "This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. The complete request is rejected if any position is invalid.",
+        "description": "This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. Gravity is returned in the local north-east-down frame. The complete request is rejected if any position is invalid.",
         "operationId": "EvaluateEarthGravity",
         "requestBody": {
           "content": {
@@ -296,19 +296,19 @@
       "OSDC.Drilling.EarthGravity.Model.EarthGravityVector": {
         "type": "object",
         "properties": {
-          "East": {
-            "type": "number",
-            "description": "Easterly acceleration component in SI metres per second squared.",
-            "format": "double"
-          },
           "North": {
             "type": "number",
             "description": "Northerly acceleration component in SI metres per second squared.",
             "format": "double"
           },
-          "Up": {
+          "East": {
             "type": "number",
-            "description": "Upward acceleration component in SI metres per second squared; normally negative.",
+            "description": "Easterly acceleration component in SI metres per second squared.",
+            "format": "double"
+          },
+          "Down": {
+            "type": "number",
+            "description": "Downward acceleration component in SI metres per second squared; normally positive.",
             "format": "double"
           },
           "Magnitude": {
@@ -324,7 +324,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "Total gravity acceleration in the local east-north-up frame."
+        "description": "Total gravity acceleration in the local north-east-down frame."
       },
       "OSDC.Drilling.EarthGravity.Model.UsageStatisticsEarthGravity": {
         "type": "object",

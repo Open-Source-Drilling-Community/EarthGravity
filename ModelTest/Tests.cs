@@ -23,9 +23,9 @@ public class Tests
 
         Assert.Multiple(() =>
         {
-            Assert.That(response.Samples[0].Gravity.East, Is.EqualTo(direct.gx).Within(1e-12));
             Assert.That(response.Samples[0].Gravity.North, Is.EqualTo(direct.gy).Within(1e-12));
-            Assert.That(response.Samples[0].Gravity.Up, Is.EqualTo(direct.gz).Within(1e-12));
+            Assert.That(response.Samples[0].Gravity.East, Is.EqualTo(direct.gx).Within(1e-12));
+            Assert.That(response.Samples[0].Gravity.Down, Is.EqualTo(-direct.gz).Within(1e-12));
             Assert.That(response.Samples[0].Gravity.TotalPotential, Is.EqualTo(direct.W).Within(1e-6));
             Assert.That(response.Samples[0].Position.Depth, Is.EqualTo(depth));
         });

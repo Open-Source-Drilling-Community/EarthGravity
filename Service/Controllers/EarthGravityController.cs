@@ -18,7 +18,7 @@ public class EarthGravityController(
     public ActionResult<EarthGravityModelInfo> GetEarthGravityEntry() => GetModelInfoResponse();
 
     /// <summary>Synchronously evaluates EGM96 total gravity for WGS84 positions expressed in OSDC SI units.</summary>
-    /// <remarks>This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. The complete request is rejected if any position is invalid.</remarks>
+    /// <remarks>This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. Gravity is returned in the local north-east-down frame. The complete request is rejected if any position is invalid.</remarks>
     [HttpPost("Evaluate", Name = "EvaluateEarthGravity")]
     [ProducesResponseType(typeof(EarthGravityEvaluationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(EarthGravityValidationProblem), StatusCodes.Status422UnprocessableEntity)]

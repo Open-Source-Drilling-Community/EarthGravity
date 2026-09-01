@@ -154,7 +154,7 @@ namespace OSDC.Drilling.EarthGravity.ModelShared
         /// Synchronously evaluates EGM96 total gravity for WGS84 positions expressed in OSDC SI units.
         /// </summary>
         /// <remarks>
-        /// This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. The complete request is rejected if any position is invalid.
+        /// This operation is stateless. Latitude and longitude are radians. Depth is metres, positive downward from the WGS84 reference ellipsoid. Gravity is returned in the local north-east-down frame. The complete request is rejected if any position is invalid.
         /// </remarks>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -735,17 +735,11 @@ namespace OSDC.Drilling.EarthGravity.ModelShared
     }
 
     /// <summary>
-    /// Total gravity acceleration in the local east-north-up frame.
+    /// Total gravity acceleration in the local north-east-down frame.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class EarthGravityVector
     {
-
-        /// <summary>
-        /// Easterly acceleration component in SI metres per second squared.
-        /// </summary>
-        [System.Text.Json.Serialization.JsonPropertyName("East")]
-        public double East { get; set; }
 
         /// <summary>
         /// Northerly acceleration component in SI metres per second squared.
@@ -754,10 +748,16 @@ namespace OSDC.Drilling.EarthGravity.ModelShared
         public double North { get; set; }
 
         /// <summary>
-        /// Upward acceleration component in SI metres per second squared; normally negative.
+        /// Easterly acceleration component in SI metres per second squared.
         /// </summary>
-        [System.Text.Json.Serialization.JsonPropertyName("Up")]
-        public double Up { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("East")]
+        public double East { get; set; }
+
+        /// <summary>
+        /// Downward acceleration component in SI metres per second squared; normally positive.
+        /// </summary>
+        [System.Text.Json.Serialization.JsonPropertyName("Down")]
+        public double Down { get; set; }
 
         /// <summary>
         /// Magnitude of the gravity vector in SI metres per second squared.

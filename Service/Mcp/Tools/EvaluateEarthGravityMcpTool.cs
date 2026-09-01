@@ -26,7 +26,7 @@ public sealed class EvaluateEarthGravityMcpTool : IMcpTool
     }
 
     public string Name => "earth_gravity_evaluate";
-    public string Description => "Synchronously evaluates EGM96 total gravity for one or more WGS84 positions. This is stateless: results are returned by this call, and no calculation order or data is persisted. Latitude and Longitude MUST be SI radians. Depth MUST be SI metres, positive downward, with zero at the WGS84 reference ellipsoid; negative Depth is above the ellipsoid. Depth is not referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum. Samples preserve the input Positions order. Gravity components use the local east-north-up (ENU) frame: East is positive eastward, North is positive northward, and Up is positive away from Earth and is therefore normally negative for gravity. Magnitude is non-negative. Acceleration and magnitude are in m/s²; TotalPotential is in m²/s². EGM96 total gravity includes centrifugal acceleration. Validation is atomic: one invalid position rejects the complete request with isError=true, no partial result, and structuredContent shaped as {Error, Message, Errors:[{PositionIndex, Property, Code, Message}]}; PositionIndex is zero-based for an item and null for a request-level error. Example request: {\"Positions\":[{\"Latitude\":1.0471975511965976,\"Longitude\":0.17453292519943295,\"Depth\":1000.0}]}.";
+    public string Description => "Synchronously evaluates EGM96 total gravity for one or more WGS84 positions. This is stateless: results are returned by this call, and no calculation order or data is persisted. Latitude and Longitude MUST be SI radians. Depth MUST be SI metres, positive downward, with zero at the WGS84 reference ellipsoid; negative Depth is above the ellipsoid. Depth is not referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum. Samples preserve the input Positions order. Gravity components use the local north-east-down (NED) frame: North is positive northward, East is positive eastward, and Down is positive toward Earth and is therefore normally positive for gravity. Magnitude is non-negative. Acceleration and magnitude are in m/s²; TotalPotential is in m²/s². EGM96 total gravity includes centrifugal acceleration. Validation is atomic: one invalid position rejects the complete request with isError=true, no partial result, and structuredContent shaped as {Error, Message, Errors:[{PositionIndex, Property, Code, Message}]}; PositionIndex is zero-based for an item and null for a request-level error. Example request: {\"Positions\":[{\"Latitude\":1.0471975511965976,\"Longitude\":0.17453292519943295,\"Depth\":1000.0}]}.";
     public JsonNode InputSchema { get; }
     public JsonNode OutputSchema { get; } = CreateOutputSchema();
 
@@ -117,15 +117,15 @@ public sealed class EvaluateEarthGravityMcpTool : IMcpTool
         },
         "gravity": {
           "type": "object",
-          "description": "EGM96 total gravity in the local east-north-up frame, including centrifugal acceleration.",
+          "description": "EGM96 total gravity in the local north-east-down frame, including centrifugal acceleration.",
           "properties": {
-            "East": { "type": "number", "description": "Eastward acceleration component in SI m/s²; positive eastward." },
             "North": { "type": "number", "description": "Northward acceleration component in SI m/s²; positive northward." },
-            "Up": { "type": "number", "description": "Upward acceleration component in SI m/s²; positive away from Earth and normally negative for gravity." },
+            "East": { "type": "number", "description": "Eastward acceleration component in SI m/s²; positive eastward." },
+            "Down": { "type": "number", "description": "Downward acceleration component in SI m/s²; positive toward Earth and normally positive for gravity." },
             "Magnitude": { "type": "number", "minimum": 0, "description": "Non-negative magnitude of the gravity vector in SI m/s²." },
             "TotalPotential": { "type": "number", "description": "Total gravitational plus centrifugal potential in SI m²/s²." }
           },
-          "required": ["East", "North", "Up", "Magnitude", "TotalPotential"],
+          "required": ["North", "East", "Down", "Magnitude", "TotalPotential"],
           "additionalProperties": false
         },
         "modelInfo": {

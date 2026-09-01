@@ -43,6 +43,7 @@ public class Tests
         {
             Assert.That(response.Samples, Has.Count.EqualTo(1));
             Assert.That(response.Samples.First().Gravity.Magnitude, Is.GreaterThan(9));
+            Assert.That(response.Samples.First().Gravity.Down, Is.GreaterThan(9));
             Assert.That(response.Model.ID, Is.EqualTo("EGM1996A"));
         });
     }
@@ -109,10 +110,19 @@ public class Tests
             .Single(tool => tool.GetProperty("name").GetString() == "earth_gravity_evaluate");
         Assert.Multiple(() =>
         {
-            Assert.That(evaluate.GetProperty("description").GetString(), Does.Contain("local east-north-up (ENU)"));
+            Assert.That(evaluate.GetProperty("description").GetString(), Does.Contain("local north-east-down (NED)"));
             Assert.That(evaluate.GetProperty("description").GetString(), Does.Contain("PositionIndex is zero-based"));
             Assert.That(evaluate.GetProperty("outputSchema").GetProperty("properties").TryGetProperty("Samples", out _), Is.True);
             Assert.That(evaluate.GetProperty("outputSchema").GetProperty("$defs").TryGetProperty("gravity", out _), Is.True);
+        });
+        JsonElement gravityProperties = evaluate.GetProperty("outputSchema").GetProperty("$defs")
+            .GetProperty("gravity").GetProperty("properties");
+        Assert.Multiple(() =>
+        {
+            Assert.That(gravityProperties.TryGetProperty("North", out _), Is.True);
+            Assert.That(gravityProperties.TryGetProperty("East", out _), Is.True);
+            Assert.That(gravityProperties.TryGetProperty("Down", out _), Is.True);
+            Assert.That(gravityProperties.TryGetProperty("Up", out _), Is.False);
         });
 
         JsonElement modelInfo = tools.EnumerateArray()

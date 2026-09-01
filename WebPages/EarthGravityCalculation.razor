@@ -54,11 +54,11 @@
         @if (result != null)
         {
             <MudDivider Class="my-5" />
-            <MudText Typo="Typo.h5" Class="mb-3">Local east-north-up gravity vector</MudText>
+            <MudText Typo="Typo.h5" Class="mb-3">Local north-east-down gravity vector</MudText>
             <MudGrid>
-                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="East" ReadOnly="true" SIValueNullable="result.Gravity.East" /></MudItem>
                 <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="North" ReadOnly="true" SIValueNullable="result.Gravity.North" /></MudItem>
-                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Up" ReadOnly="true" SIValueNullable="result.Gravity.Up" /></MudItem>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="East" ReadOnly="true" SIValueNullable="result.Gravity.East" /></MudItem>
+                <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Down" ReadOnly="true" SIValueNullable="result.Gravity.Down" /></MudItem>
                 <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Magnitude" ReadOnly="true" SIValueNullable="result.Gravity.Magnitude" /></MudItem>
             </MudGrid>
             <MudText Typo="Typo.body2" Class="mt-4">Total potential: @result.Gravity.TotalPotential.ToString("G12") m²/s² (SI)</MudText>

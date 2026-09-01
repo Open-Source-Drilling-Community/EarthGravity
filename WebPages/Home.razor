@@ -5,5 +5,169 @@
 <MudText Class="mx-6 px-6" Typo="Typo.body1">
     This stateless microservice evaluates EGM96 total gravity at WGS84 positions. Public API values always use SI:
     latitude and longitude are radians, and depth is metres positive downward from the WGS84 reference ellipsoid.
-    The web interface can display and accept other units through the OSDC unit-reference system while preserving SI on the API boundary.
+    The web interface can display and accept other units through the OSDC unit-reference system while preserving SI
+    on the API boundary.
 </MudText>
+
+<MudGrid Class="mx-4 px-4 mt-2">
+    <MudItem xs="12" md="6">
+        <MudPaper Class="pa-6 mt-4" Elevation="2">
+            <MudText Typo="Typo.h5" Class="mb-3">Why gravity varies by location</MudText>
+            <MudText Typo="Typo.body1" Class="mb-2">
+                Two effects change the pull of gravity as you move across the globe. First, the Earth is not a
+                sphere: it bulges at the equator and flattens at the poles, and it spins, so a point at the equator
+                is both farther from the centre of mass and subject to more centrifugal acceleration than a point at
+                the poles. Together these make gravity roughly 0.5% weaker at the equator than at the poles.
+            </MudText>
+            <MudText Typo="Typo.body1">
+                Second, the Earth's mass is not evenly distributed. Mountain ranges, ocean trenches, sedimentary
+                basins, and denser or lighter rock in the crust and mantle all add small local pulls or deficits on
+                top of the smooth ellipsoidal trend. These are <b>gravity anomalies</b>, and mapping them is one of
+                the main uses of a global gravity model.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudPaper Class="pa-6 mt-4" Elevation="2">
+            <MudText Typo="Typo.h5" Class="mb-3">Why gravity varies with depth</MudText>
+            <MudText Typo="Typo.body1" Class="mb-2">
+                Gravity also changes with elevation. Moving away from the WGS84 ellipsoid — upward, in the
+                free-air sense — weakens gravity because you are farther from the bulk of the Earth's mass; moving
+                toward it, including to modest depths below the surface such as a wellbore, strengthens it slightly
+                for the same reason, before deeper effects such as the mass enclosed above you start to matter.
+            </MudText>
+            <MudText Typo="Typo.body1">
+                EGM96 is a model of the gravity field <i>outside</i> the Earth's masses. This service evaluates it by
+                converting the requested SI <code>Depth</code> to an ellipsoidal height (<code>height = −Depth</code>)
+                and downward-continuing the same spherical-harmonic solution, the standard practice for near-surface
+                engineering use such as borehole surveys; it does not model the Earth's internal density structure.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudPaper Class="pa-6 mt-4" Elevation="2">
+            <MudText Typo="Typo.h5" Class="mb-3">How gravity is estimated: EGM96</MudText>
+            <MudText Typo="Typo.body1" Class="mb-2">
+                <b>EGM96</b> (Earth Gravitational Model 1996) represents the Earth's gravitational potential as a
+                spherical-harmonic expansion up to degree and order 360, fit jointly to satellite tracking data,
+                surface and shipborne gravimetry, and satellite altimetry over the oceans. Combined with the
+                ellipsoid's own centrifugal term, evaluating the expansion and its gradient at a position gives the
+                total gravity vector and potential there.
+            </MudText>
+            <MudText Typo="Typo.body1">
+                This service loads the model once at startup using <b>GeographicLib</b>'s implementation. Exact
+                model identity, degree/order, publisher, release date, and a SHA-256 of the coefficient file are
+                available on the <MudLink Href="/EarthGravity/webapp/EarthGravityModel">Gravity model</MudLink> page
+                and via the model-information API and MCP tool.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <MudPaper Class="pa-6 mt-4" Elevation="2">
+            <MudText Typo="Typo.h5" Class="mb-3">Why this matters</MudText>
+            <MudText Typo="Typo.body1" Class="mb-2">
+                Systems that sense or rely on the direction and strength of gravity need the local value, not a
+                single global average. Inertial navigation and gyroscopic surveying instruments — including
+                measurement-while-drilling and gyro tools used to orient a wellbore — resolve their attitude against
+                the local gravity vector, so an error in the assumed gravity translates directly into a position or
+                orientation error.
+            </MudText>
+            <MudText Typo="Typo.body1">
+                Geophysical surveys likewise use the local anomaly, after removing the smooth ellipsoidal trend, to
+                infer subsurface density contrasts. This microservice exists so that any consuming application can
+                get a consistent, provenance-tracked gravity vector for a WGS84 position without embedding its own
+                gravity model.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+<MudPaper Class="mx-4 px-4 pa-6 mt-4" Elevation="2">
+    <MudText Typo="Typo.h5" Class="mb-3">OSDC convention</MudText>
+    <MudText Typo="Typo.body1" Class="mb-2">
+        Latitude and longitude are always WGS84 geodetic coordinates in SI radians. <code>Depth</code> is SI metres,
+        positive downward from the WGS84 reference ellipsoid; a negative depth is above the ellipsoid. Depth is
+        never referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum — use the
+        <MudLink Href="https://github.com/Open-Source-Drilling-Community/EarthVerticalDatum">Earth Vertical Datum</MudLink>
+        microservice first if a conversion from one of those references is needed.
+    </MudText>
+    <MudText Typo="Typo.body1" Class="mb-2">
+        The returned gravity vector is expressed in the local <b>north-east-down (NED)</b> frame, in SI m/s²: North
+        is positive northward, East is positive eastward, and Down is positive toward the Earth and therefore
+        normally positive for gravity. <code>Magnitude</code> is the non-negative norm of the vector, and
+        <code>TotalPotential</code> — in SI m²/s² — is the combined gravitational and centrifugal potential at that
+        position. Total gravity always includes the centrifugal acceleration of Earth's rotation.
+    </MudText>
+    <MudText Typo="Typo.body1">
+        Every request is stateless and atomic: nothing is persisted, all positions in a batch are validated
+        together, and one invalid position rejects the complete request rather than returning a partial result. The
+        web interface can display and accept other units through the OSDC unit-reference system, but SI radians and
+        SI metres are always what cross the API boundary.
+    </MudText>
+</MudPaper>
+
+<MudPaper Class="mx-4 px-4 pa-6 mt-4" Elevation="2">
+    <MudText Typo="Typo.h5" Class="mb-3">Using this web application</MudText>
+    <MudText Typo="Typo.body1" Class="mb-2">
+        Open <MudLink Href="/EarthGravity/webapp/EarthGravityCalculation">Evaluate gravity</MudLink>, enter a WGS84
+        latitude and longitude — as sexagesimal or decimal degrees — and a depth below the WGS84 ellipsoid, then
+        press <i>Evaluate</i>. The input and result fields follow the unit system selected for the page, while the
+        service itself always exchanges SI radians and SI metres. The result panel reports the north, east, and down
+        gravity components, the vector magnitude, the total potential, and the identity of the model used.
+    </MudText>
+    <MudText Typo="Typo.body1">
+        The <MudLink Href="/EarthGravity/webapp/EarthGravityModel">Gravity model</MudLink> page shows the loaded
+        model's identity, degree/order, publisher, release date, and coefficient checksum. The
+        <MudLink Href="/EarthGravity/webapp/StatisticsEarthGravity">Usage statistics</MudLink> page shows in-process
+        request counters for this service replica.
+    </MudText>
+</MudPaper>
+
+<MudPaper Class="mx-4 px-4 pa-6 mt-4 mb-6" Elevation="2">
+    <MudText Typo="Typo.h5" Class="mb-3">Access methods</MudText>
+    <MudText Typo="Typo.body1" Class="mb-3">
+        The same evaluation is reachable through several interfaces built on the same stateless model, so it can be
+        used interactively or wired into other systems and AI agents.
+    </MudText>
+    <MudSimpleTable>
+        <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Web page</b></td>
+                <td>
+                    This site — a server-side Blazor application (this page) for manual, one-off evaluations and for
+                    inspecting the loaded gravity model and usage statistics.
+                </td>
+            </tr>
+            <tr>
+                <td><b>REST API</b></td>
+                <td>
+                    JSON endpoints under <code>/EarthGravity/api/EarthGravity</code> for discovery, model
+                    information, and synchronous batch evaluation, documented and explorable through the Swagger UI
+                    at <code>/EarthGravity/api/swagger</code>. Suited to scripts, backend integration, and any HTTP
+                    client.
+                </td>
+            </tr>
+            <tr>
+                <td><b>MCP</b></td>
+                <td>
+                    A Model Context Protocol server exposed as Streamable HTTP at
+                    <code>/EarthGravity/api/mcp</code>, publishing three tools — connectivity <code>ping</code>,
+                    <code>earth_gravity_get_model_info</code>, and <code>earth_gravity_evaluate</code> — with strict
+                    input/output JSON Schemas, so AI agents and MCP-aware tooling can call the same evaluations
+                    directly.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Reusable web pages</b></td>
+                <td>
+                    The Razor components behind the "Evaluate gravity" and "Gravity model" pages are published as the
+                    <code>OSDC.Drilling.EarthGravity.WebPages</code> NuGet package, so other Blazor applications can
+                    embed the same unit-aware controls instead of re-implementing this UI.
+                </td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+</MudPaper>

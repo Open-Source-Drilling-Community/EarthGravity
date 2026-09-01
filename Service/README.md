@@ -45,7 +45,7 @@ Registered tools:
 
 - `ping`: reachability check with a fixed structured response.
 - `earth_gravity_get_model_info`: loaded model identity, runtime version, and coefficient-file provenance.
-- `earth_gravity_evaluate`: synchronous batch evaluation with echoed positions, model provenance, and local east-north-up gravity results.
+- `earth_gravity_evaluate`: synchronous batch evaluation with echoed positions, model provenance, and local north-east-down gravity results.
 
 All three tools publish strict input and output JSON schemas in `tools/list`. The evaluate description and schemas state SI units, the WGS84 ellipsoid depth reference, component signs, result ordering, and the structured atomic-validation error contract. `EarthGravityUsageStatistics` is intentionally not registered as an MCP tool. This is enforced by `ServiceTest` through dependency-injection registry and HTTP discovery checks.
 

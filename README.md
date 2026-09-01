@@ -30,10 +30,10 @@ All API and MCP values use OSDC internal SI conventions:
 - `Latitude`: WGS84 geodetic latitude in radians, from `-pi/2` to `pi/2`.
 - `Longitude`: WGS84 longitude in radians, from `-pi` to `pi`.
 - `Depth`: metres, positive downward, with zero at the WGS84 reference ellipsoid. A negative value denotes height above the ellipsoid. It is not referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum.
-- `East`, `North`, `Up`, and `Magnitude`: metres per second squared. `Up` is positive away from Earth and is normally negative.
+- `North`, `East`, `Down`, and `Magnitude`: metres per second squared. `Down` is positive toward Earth and is normally positive.
 - `TotalPotential`: square metres per square second.
 
-GeographicLib expects degrees and ellipsoidal height positive upward. These are private implementation details inside `Model`: angles are converted from radians and `ellipsoidalHeight = -Depth`. EGM96 total gravity includes centrifugal acceleration.
+GeographicLib expects degrees and ellipsoidal height positive upward, and returns east-north-up components. These are private implementation details inside `Model`: angles are converted from radians, `ellipsoidalHeight = -Depth`, the horizontal components are reordered, and the upward component is negated to produce the public north-east-down vector. EGM96 total gravity includes centrifugal acceleration.
 
 Example using the checked-in local HTTP port:
 
@@ -64,7 +64,7 @@ The stateless streamable-HTTP endpoint is `/EarthGravity/api/mcp`. It exposes ex
 - `earth_gravity_get_model_info`
 - `earth_gravity_evaluate`
 
-Every tool publishes strict JSON input and output schemas through MCP `tools/list`. The evaluate metadata also documents the SI/WGS84 contract, positive-down `Depth`, local east-north-up component signs, input-order preservation, output units, model provenance, EGM96 behavior, stateless execution, batch limit, and atomic structured validation errors. Usage statistics are intentionally available only through REST and metrics; they are not registered as an MCP tool. `ServiceTest` verifies the published discovery metadata as well as the exclusion of usage statistics.
+Every tool publishes strict JSON input and output schemas through MCP `tools/list`. The evaluate metadata also documents the SI/WGS84 contract, positive-down `Depth`, local north-east-down component signs, input-order preservation, output units, model provenance, EGM96 behavior, stateless execution, batch limit, and atomic structured validation errors. Usage statistics are intentionally available only through REST and metrics; they are not registered as an MCP tool. `ServiceTest` verifies the published discovery metadata as well as the exclusion of usage statistics.
 
 ## ModelSharedOut generation
 

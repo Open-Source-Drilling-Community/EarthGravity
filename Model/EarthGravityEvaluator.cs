@@ -65,9 +65,9 @@ public sealed class EarthGravityEvaluator
                     },
                     Gravity = new EarthGravityVector
                     {
-                        East = east,
                         North = north,
-                        Up = up,
+                        East = east,
+                        Down = -up,
                         TotalPotential = potential
                     }
                 });
