@@ -1,27 +1,136 @@
 @page "/StatisticsEarthGravity"
+@inject ILogger<StatisticsEarthGravity> logger
+@inject ISnackbar Snackbar
 @inject IEarthGravityAPIUtils Api
 
-<MudPaper Class="pa-6 mt-4" Elevation="2">
-    <MudText Typo="Typo.h4">Usage statistics</MudText>
-    <MudText Typo="Typo.body2" Class="mb-4">Counters are in-memory and scoped to the service replica selected by Kubernetes.</MudText>
-    @if (statistics == null)
+<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-4">
+        <div>
+            <MudText Typo="Typo.h5"><strong>Usage Statistics</strong></MudText>
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                Earth Gravity service requests recorded by operation for this process replica.
+            </MudText>
+        </div>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Refresh"
+                   Disabled="@isLoading_"
+                   OnClick="RefreshAsync">
+            Refresh
+        </MudButton>
+    </MudStack>
+
+    @if (isLoading_)
     {
         <MudProgressLinear Indeterminate="true" />
     }
+    else if (statistics_ == null)
+    {
+        <MudAlert Severity="Severity.Warning">Unable to load Earth Gravity usage statistics.</MudAlert>
+    }
     else
     {
-        <MudSimpleTable>
-            <tbody>
-                <tr><th>REST evaluations</th><td>@statistics.RestEvaluations</td></tr>
-                <tr><th>MCP evaluations</th><td>@statistics.MCPEvaluations</td></tr>
-                <tr><th>Failed evaluations</th><td>@statistics.FailedEvaluations</td></tr>
-                <tr><th>Positions evaluated</th><td>@statistics.PositionsEvaluated</td></tr>
-            </tbody>
-        </MudSimpleTable>
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.subtitle2">Total requests</MudText>
+                <MudText Typo="Typo.h6">@totalRequests_</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.subtitle2">Positions evaluated</MudText>
+                <MudText Typo="Typo.h6">@statistics_.PositionsEvaluated</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.subtitle2">Failed evaluations</MudText>
+                <MudText Typo="Typo.h6">@statistics_.FailedEvaluations</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.subtitle2">Replica started</MudText>
+                <MudText Typo="Typo.h6">@FormatDate(statistics_.StartedAt)</MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudTable Items="rows_" Dense="true" Hover="true" Bordered="true" Striped="true" SortLabel="Sort by">
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<UsageRow, string>(row => row.Method)">Method</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<UsageRow, string>(row => row.Operation)">Endpoint / tool</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<UsageRow, object>(row => row.Total)">Total</MudTableSortLabel></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Method">
+                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="@MethodColor(context.Method)">
+                        @context.Method
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Endpoint / tool">@context.Operation</MudTd>
+                <MudTd DataLabel="Total">@context.Total</MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No usage counters were returned by the Earth Gravity service.</MudText>
+            </NoRecordsContent>
+        </MudTable>
     }
-</MudPaper>
+</MudStack>
 
 @code {
-    private UsageStatisticsEarthGravity? statistics;
-    protected override async Task OnInitializedAsync() => statistics = await Api.ClientEarthGravity.GetEarthGravityUsageStatisticsAsync();
+    private UsageStatisticsEarthGravity? statistics_;
+    private readonly List<UsageRow> rows_ = [];
+    private long totalRequests_;
+    private bool isLoading_ = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
+        isLoading_ = true;
+        try
+        {
+            statistics_ = await Api.ClientEarthGravity.GetEarthGravityUsageStatisticsAsync();
+            BuildRows();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Problem loading Earth Gravity usage statistics");
+            statistics_ = null;
+            rows_.Clear();
+            totalRequests_ = 0;
+            Snackbar.Add("Unable to load Earth Gravity usage statistics.", Severity.Error);
+        }
+        finally
+        {
+            isLoading_ = false;
+        }
+    }
+
+    private void BuildRows()
+    {
+        rows_.Clear();
+        totalRequests_ = 0;
+
+        if (statistics_ == null)
+        {
+            return;
+        }
+
+        rows_.Add(new UsageRow("GET", "/EarthGravity and /EarthGravity/ModelInfo", statistics_.ModelInfoRequests));
+        rows_.Add(new UsageRow("POST", "/EarthGravity/Evaluate", statistics_.RestEvaluations));
+        rows_.Add(new UsageRow("MCP", "earth_gravity_evaluate", statistics_.MCPEvaluations));
+        rows_.Add(new UsageRow("GET", "/EarthGravityUsageStatistics", statistics_.StatisticsRequests));
+        totalRequests_ = rows_.Sum(row => row.Total);
+    }
+
+    private static Color MethodColor(string method) => method switch
+    {
+        "GET" => Color.Info,
+        "POST" => Color.Success,
+        "MCP" => Color.Secondary,
+        _ => Color.Default
+    };
+
+    private static string FormatDate(DateTimeOffset value) =>
+        value != default ? value.ToLocalTime().ToString("yyyy-MM-dd HH:mm") : "-";
+
+    private sealed record UsageRow(string Method, string Operation, long Total);
 }
