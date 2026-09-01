@@ -10,7 +10,7 @@ Reusable server-side Blazor pages for the OSDC Earth Gravity service. The packag
 - `/Home`: service purpose and SI/WGS84 conventions.
 - `/EarthGravityCalculation`: unit-aware single-position gravity evaluation.
 - `/EarthGravityModel`: EGM96 provenance and coefficient hash.
-- `/StatisticsEarthGravity`: per-replica operational counters.
+- `/StatisticsEarthGravity`: cumulative operational counters retained by the service's persistent data volume.
 
 `EarthGravityCalculation` uses:
 
@@ -70,7 +70,7 @@ From the repository root:
 
 ```powershell
 dotnet build WebPages/WebPages.csproj -c Release
-dotnet pack WebPages/WebPages.csproj -c Release -p:PackageVersion=1.0.0
+dotnet pack WebPages/WebPages.csproj -c Release -p:PackageVersion=1.0.2
 ```
 
 The project currently generates a package during Release builds. The GitHub workflow publishes `OSDC.Drilling.EarthGravity.WebPages` for `webpages-v*` tags or a manually supplied version.

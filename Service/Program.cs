@@ -12,13 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions<EarthGravityServiceOptions>()
     .Bind(builder.Configuration.GetSection(EarthGravityServiceOptions.SectionName))
     .Validate(value => value.MaximumPositionsPerRequest > 0, "MaximumPositionsPerRequest must be positive.")
+    .Validate(value => !string.IsNullOrWhiteSpace(value.UsageStatisticsFile) && value.UsageStatisticsSaveIntervalSeconds > 0,
+        "Usage-statistics file and save interval must be configured.")
     .ValidateOnStart();
 builder.Services.AddSingleton(provider =>
 {
     EarthGravityServiceOptions options = provider.GetRequiredService<IOptions<EarthGravityServiceOptions>>().Value;
     return new EarthGravityEvaluator(options.ModelDirectory);
 });
-builder.Services.AddSingleton<UsageStatisticsEarthGravity>();
+builder.Services.AddSingleton(provider => new UsageStatisticsStore(
+    provider.GetRequiredService<IOptions<EarthGravityServiceOptions>>().Value,
+    provider.GetRequiredService<IHostEnvironment>(),
+    provider.GetRequiredService<ILogger<UsageStatisticsStore>>()));
+builder.Services.AddSingleton(provider => provider.GetRequiredService<UsageStatisticsStore>().Statistics);
+builder.Services.AddHostedService(provider => provider.GetRequiredService<UsageStatisticsStore>());
 builder.Services.AddControllers().AddJsonOptions(options => JsonSettings.ApplyTo(options.JsonSerializerOptions));
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true);

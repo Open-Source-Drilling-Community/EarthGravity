@@ -12,8 +12,8 @@
 - Loads the GeographicLib EGM96 model once per `EarthGravityEvaluator`.
 - Converts public SI radians to GeographicLib degrees.
 - Converts positive-down WGS84 `Depth` to positive-up ellipsoidal height using `height = -Depth`.
-- Returns east/north/up total-gravity components, magnitude, total potential, and model provenance.
-- Defines in-memory, per-replica usage counters used by the Service.
+- Converts GeographicLib east/north/up output and returns public north/east/down total-gravity components, magnitude, total potential, and model provenance.
+- Defines thread-safe cumulative usage counters that the Service can snapshot and restore.
 
 ## Coordinate and unit contract
 

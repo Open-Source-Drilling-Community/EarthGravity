@@ -8,7 +8,7 @@ namespace OSDC.Drilling.EarthGravity.Service.Controllers;
 [ApiController]
 public class EarthGravityUsageStatisticsController(UsageStatisticsEarthGravity statistics) : ControllerBase
 {
-    /// <summary>Returns in-memory usage counters for this service replica. This operation is intentionally not exposed as an MCP tool.</summary>
+    /// <summary>Returns cumulative usage counters persisted by this service. This operation is intentionally not exposed as an MCP tool.</summary>
     [HttpGet(Name = "GetEarthGravityUsageStatistics")]
     public ActionResult<UsageStatisticsEarthGravity> GetEarthGravityUsageStatistics()
     {

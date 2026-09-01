@@ -15,5 +15,9 @@ FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:8080
+ENV EarthGravity__UsageStatisticsFile=/home/EarthGravity.UsageStatistics.json
+USER root
+RUN mkdir -p /home && chown app:app /home
+VOLUME ["/home"]
 USER app
 ENTRYPOINT ["dotnet", "Service.dll"]

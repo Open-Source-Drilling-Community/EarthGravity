@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -14,11 +15,13 @@ public class Tests
     private WebApplicationFactory<Program> factory_ = null!;
     private HttpClient httpClient_ = null!;
     private Client generatedClient_ = null!;
+    private string statisticsFile_ = null!;
 
     [SetUp]
     public void Setup()
     {
-        factory_ = new WebApplicationFactory<Program>();
+        statisticsFile_ = Path.Combine(Path.GetTempPath(), "earthgravity-tests", Guid.NewGuid().ToString(), "statistics.json");
+        factory_ = CreateFactory(statisticsFile_);
         httpClient_ = factory_.CreateClient();
         generatedClient_ = new Client("http://localhost/EarthGravity/api/", httpClient_);
     }
@@ -28,6 +31,12 @@ public class Tests
     {
         httpClient_.Dispose();
         factory_.Dispose();
+        string? directory = Path.GetDirectoryName(statisticsFile_);
+        if (directory is not null && Directory.Exists(directory) &&
+            Path.GetFullPath(directory).StartsWith(Path.GetFullPath(Path.GetTempPath()), StringComparison.OrdinalIgnoreCase))
+        {
+            Directory.Delete(directory, true);
+        }
     }
 
     [Test]
@@ -46,6 +55,44 @@ public class Tests
             Assert.That(response.Samples.First().Gravity.Down, Is.GreaterThan(9));
             Assert.That(response.Model.ID, Is.EqualTo("EGM1996A"));
         });
+    }
+
+    [Test]
+    public async Task UsageStatisticsSurviveServiceRestart()
+    {
+        string statisticsFile = Path.Combine(Path.GetTempPath(), "earthgravity-restart-tests",
+            Guid.NewGuid().ToString(), "statistics.json");
+        try
+        {
+            DateTimeOffset startedAt;
+            using (var firstFactory = CreateFactory(statisticsFile))
+            using (HttpClient firstHttpClient = firstFactory.CreateClient())
+            {
+                var firstClient = new Client("http://localhost/EarthGravity/api/", firstHttpClient);
+                await firstClient.GetEarthGravityEntryAsync();
+                UsageStatisticsEarthGravity beforeRestart = await firstClient.GetEarthGravityUsageStatisticsAsync();
+                startedAt = beforeRestart.StartedAt;
+                Assert.That(beforeRestart.ModelInfoRequests, Is.GreaterThanOrEqualTo(1));
+            }
+
+            Assert.That(File.Exists(statisticsFile), Is.True);
+
+            using var secondFactory = CreateFactory(statisticsFile);
+            using HttpClient secondHttpClient = secondFactory.CreateClient();
+            var secondClient = new Client("http://localhost/EarthGravity/api/", secondHttpClient);
+            UsageStatisticsEarthGravity restored = await secondClient.GetEarthGravityUsageStatisticsAsync();
+            Assert.Multiple(() =>
+            {
+                Assert.That(restored.ModelInfoRequests, Is.GreaterThanOrEqualTo(1));
+                Assert.That(restored.StartedAt, Is.EqualTo(startedAt));
+                Assert.That(restored.Scope, Is.EqualTo("persistent-service"));
+            });
+        }
+        finally
+        {
+            string? directory = Path.GetDirectoryName(statisticsFile);
+            if (directory is not null && Directory.Exists(directory)) Directory.Delete(directory, true);
+        }
     }
 
     [Test]
@@ -136,4 +183,11 @@ public class Tests
     [TestCase("/EarthGravity/api/swagger/merged/swagger.json")]
     public async Task OperationalEndpointsAreAvailable(string path) =>
         Assert.That((await httpClient_.GetAsync(path)).StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+    private static WebApplicationFactory<Program> CreateFactory(string statisticsFile) =>
+        new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting("EarthGravity:UsageStatisticsFile", statisticsFile);
+            builder.UseSetting("EarthGravity:UsageStatisticsSaveIntervalSeconds", "3600");
+        });
 }

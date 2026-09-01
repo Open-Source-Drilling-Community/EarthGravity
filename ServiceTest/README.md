@@ -11,6 +11,7 @@ Coverage includes:
 - Typed HTTP 422 validation through the generated client.
 - The exact three-tool MCP dependency-injection registry.
 - MCP HTTP `tools/list`, including the absence of usage statistics.
+- Usage-counter persistence and restoration across a service restart.
 - Liveness, readiness, Prometheus metrics, and merged Swagger endpoints.
 
 Run from the repository root:

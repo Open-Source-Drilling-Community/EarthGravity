@@ -99,10 +99,11 @@
         position. Total gravity always includes the centrifugal acceleration of Earth's rotation.
     </MudText>
     <MudText Typo="Typo.body1">
-        Every request is stateless and atomic: nothing is persisted, all positions in a batch are validated
-        together, and one invalid position rejects the complete request rather than returning a partial result. The
-        web interface can display and accept other units through the OSDC unit-reference system, but SI radians and
-        SI metres are always what cross the API boundary.
+        Every calculation request is stateless and atomic: input positions and results are not persisted, all
+        positions in a batch are validated together, and one invalid position rejects the complete request rather
+        than returning a partial result. Only cumulative operational counters are retained by the service. The web
+        interface can display and accept other units through the OSDC unit-reference system, but SI radians and SI
+        metres are always what cross the API boundary.
     </MudText>
 </MudPaper>
 
@@ -118,8 +119,8 @@
     <MudText Typo="Typo.body1">
         The <MudLink Href="/EarthGravity/webapp/EarthGravityModel">Gravity model</MudLink> page shows the loaded
         model's identity, degree/order, publisher, release date, and coefficient checksum. The
-        <MudLink Href="/EarthGravity/webapp/StatisticsEarthGravity">Usage statistics</MudLink> page shows in-process
-        request counters for this service replica.
+        <MudLink Href="/EarthGravity/webapp/StatisticsEarthGravity">Usage statistics</MudLink> page shows cumulative
+        request counters retained across pod restarts when the service's persistent <code>/home</code> volume is retained.
     </MudText>
 </MudPaper>
 

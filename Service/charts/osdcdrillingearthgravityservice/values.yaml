@@ -15,7 +15,9 @@ podAnnotations:
   prometheus.io/path: /EarthGravity/api/metrics
   prometheus.io/port: "8080"
 podLabels: {}
-podSecurityContext: {}
+podSecurityContext:
+  fsGroup: 1654
+  fsGroupChangePolicy: OnRootMismatch
 securityContext: {}
 service:
   type: ClusterIP
@@ -24,6 +26,14 @@ service:
     description: "A stateless microservice for evaluating EGM96 Earth gravity"
 earthGravity:
   maximumPositionsPerRequest: 10000
+  usageStatisticsFile: /home/EarthGravity.UsageStatistics.json
+  usageStatisticsSaveIntervalSeconds: 30
+persistence:
+  enabled: true
+  existingClaim: ""
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
 resources: {}
 autoscaling:
   enabled: false

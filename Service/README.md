@@ -3,7 +3,7 @@
 **Author:** Eric Cayeux  
 **Company:** NORCE Research
 
-`Service` is the ASP.NET Core host for the stateless OSDC Earth Gravity REST and MCP APIs. It references `Model`, loads EGM96 during startup, and performs no persistence.
+`Service` is the ASP.NET Core host for the OSDC Earth Gravity REST and MCP APIs. EGM96 calculations remain stateless: request positions and results are never persisted. The service restores and periodically snapshots cumulative usage counters.
 
 ## Local URLs
 
@@ -23,7 +23,7 @@ dotnet run --project Service
 - `GET /EarthGravity/api/EarthGravity`: microservice discovery entry point returning the loaded EGM96 model information.
 - `POST /EarthGravity/api/EarthGravity/Evaluate`: synchronous batch evaluation.
 - `GET /EarthGravity/api/EarthGravity/ModelInfo`: loaded EGM96 provenance.
-- `GET /EarthGravity/api/EarthGravityUsageStatistics`: in-memory counters for this replica.
+- `GET /EarthGravity/api/EarthGravityUsageStatistics`: cumulative counters persisted by the service.
 - `GET /EarthGravity/api/metrics`: Prometheus counters.
 - `GET /EarthGravity/api/health/live`: liveness.
 - `GET /EarthGravity/api/health/ready`: readiness and model ID.
@@ -36,6 +36,8 @@ EarthGravity__MaximumPositionsPerRequest=5000
 ```
 
 An optional `EarthGravity__ModelDirectory` may point to a directory containing `egm96.egm` and `egm96.egm.cof`. Otherwise the files are loaded from `GravityModelFiles` beside the application.
+
+Usage-counter snapshots default to `/home/EarthGravity.UsageStatistics.json` in the container. Changed counters are written atomically every 30 seconds and flushed during graceful shutdown. Configure `EarthGravity__UsageStatisticsFile` and `EarthGravity__UsageStatisticsSaveIntervalSeconds` to override these defaults.
 
 ## MCP
 
@@ -63,10 +65,10 @@ Build from the repository root:
 
 ```bash
 docker build -f Service/Dockerfile -t earthgravity-service .
-docker run --rm -p 8080:8080 earthgravity-service
+docker run --rm -p 8080:8080 -v earthgravity-home:/home earthgravity-service
 ```
 
-The container runs as the non-root .NET `app` user. The API is then available below `http://localhost:8080/EarthGravity/api`.
+The container runs as the non-root .NET `app` user, declares `/home` as its persistent data volume, and stores the statistics snapshot there. The API is then available below `http://localhost:8080/EarthGravity/api`.
 
 The publication workflow pushes this image to `docker.io/digiwells/osdcdrillingearthgravityservice` using the GitHub Actions secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
@@ -79,6 +81,6 @@ helm upgrade --install earthgravity-service Service/charts/osdcdrillingearthgrav
   --namespace earthgravity --create-namespace
 ```
 
-The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. Following the original Gravitational Field chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates no PodDisruptionBudget and requires no persistence volume or sticky session.
+The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. Following the original Gravitational Field chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates a PVC mounted at `/home` by default; set `persistence.existingClaim` to reuse a managed volume. Keep one writer replica while using the JSON statistics snapshot. It creates no PodDisruptionBudget and requires no sticky session.
 
 The chart defaults to `docker.io/digiwells/osdcdrillingearthgravityservice`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.

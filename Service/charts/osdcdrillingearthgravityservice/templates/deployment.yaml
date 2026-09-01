@@ -31,6 +31,8 @@ spec:
           env:
             - { name: ASPNETCORE_URLS, value: "http://+:8080" }
             - { name: EarthGravity__MaximumPositionsPerRequest, value: {{ .Values.earthGravity.maximumPositionsPerRequest | quote }} }
+            - { name: EarthGravity__UsageStatisticsFile, value: {{ .Values.earthGravity.usageStatisticsFile | quote }} }
+            - { name: EarthGravity__UsageStatisticsSaveIntervalSeconds, value: {{ .Values.earthGravity.usageStatisticsSaveIntervalSeconds | quote }} }
           ports:
             - { name: http, containerPort: 8080 }
           {{- if .Values.probes.enabled }}
@@ -44,9 +46,17 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - { name: tmp, mountPath: /tmp }
+            - { name: statistics, mountPath: /home }
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: statistics
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ default (printf "%s-statistics" (include "earthgravityservice.fullname" .)) .Values.persistence.existingClaim }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}

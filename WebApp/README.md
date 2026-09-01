@@ -51,7 +51,7 @@ Environment variables with the same names override these settings. Each URL is a
 - `/EarthGravity/webapp/health/live`
 - `/EarthGravity/webapp/health/ready`
 
-Because server-side Blazor maintains a circuit, horizontally scaled WebApp replicas require session affinity or a compatible backplane. The supplied WebApp Helm chart uses Kubernetes `ClientIP` affinity. This requirement applies only to the WebApp; the REST/MCP Service is stateless.
+Because server-side Blazor maintains a circuit, horizontally scaled WebApp replicas require session affinity or a compatible backplane. The supplied WebApp Helm chart uses Kubernetes `ClientIP` affinity. REST and MCP calculations do not require affinity, but the Service's persisted JSON statistics snapshot is a single-writer design and its supplied deployment should remain at one replica.
 
 ## Docker
 

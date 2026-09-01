@@ -1,6 +1,6 @@
 # OSDC Earth Gravity
 
-OSDC Earth Gravity is a stateless EGM96 microservice with REST, Model Context Protocol (MCP), a generated shared API client, reusable unit-aware WebPages, and a server-side Blazor WebApp. It follows the established OSDC microservice solution structure while intentionally omitting the database, calculation-order resources, temporary GUID workflow, and CRUD endpoints from `NORCE.Drilling.GravitationalField`.
+OSDC Earth Gravity is an EGM96 microservice with stateless calculations, REST, Model Context Protocol (MCP), a generated shared API client, reusable unit-aware WebPages, and a server-side Blazor WebApp. It follows the established OSDC microservice solution structure while intentionally omitting the database, calculation-order resources, temporary GUID workflow, and CRUD endpoints from `NORCE.Drilling.GravitationalField`. Cumulative usage counters are persisted separately from calculation inputs and results.
 
 This project replaces https://github.com/Open-Source-Drilling-Community/GravitationalField. The repository https://github.com/Open-Source-Drilling-Community/GravitationalField is therefore switched to be archived.
 
@@ -12,7 +12,7 @@ This project replaces https://github.com/Open-Source-Drilling-Community/Gravitat
 - `WebPages`: reusable Razor class library that consumes `ModelSharedOut` and the OSDC unit-reference components.
 - `WebApp`: server-side Blazor host for `WebPages`, with its own Dockerfile and Helm chart.
 - `ModelTest`: calculation, convention, provenance, and validation tests.
-- `ServiceTest`: generated-client, REST, MCP-discovery, Swagger, metrics, and health tests.
+- `ServiceTest`: generated-client, REST, MCP-discovery, statistics-restart, Swagger, metrics, and health tests.
 
 The main dependency and generation flow is:
 
@@ -48,13 +48,13 @@ curl -X POST http://localhost:58944/EarthGravity/api/EarthGravity/Evaluate \
 - `GET /EarthGravity/api/EarthGravity`: microservice discovery entry point; returns the same loaded EGM96 model information as `ModelInfo`.
 - `POST /EarthGravity/api/EarthGravity/Evaluate`: evaluate one or more positions.
 - `GET /EarthGravity/api/EarthGravity/ModelInfo`: EGM96 identity, provenance, degree/order, GeographicLib version, and coefficient SHA-256.
-- `GET /EarthGravity/api/EarthGravityUsageStatistics`: in-memory counters for the selected service replica.
+- `GET /EarthGravity/api/EarthGravityUsageStatistics`: cumulative counters persisted by the service.
 - `GET /EarthGravity/api/metrics`: Prometheus text metrics.
 - `GET /EarthGravity/api/health/live`: liveness probe.
 - `GET /EarthGravity/api/health/ready`: readiness probe, including the loaded model ID.
 - `/EarthGravity/api/swagger`: Swagger UI backed by the merged public OpenAPI document.
 
-Usage counters are process-replica scoped and reset when a replica restarts. Prometheus should scrape and aggregate all service pods.
+Usage counters have `persistent-service` scope and retain their original `StartedAt` value when restored. Prometheus may scrape the same cumulative totals, but the JSON snapshot is a single-writer design, so the supplied persistent deployment should remain at one service replica.
 
 ## MCP
 
@@ -65,6 +65,8 @@ The stateless streamable-HTTP endpoint is `/EarthGravity/api/mcp`. It exposes ex
 - `earth_gravity_evaluate`
 
 Every tool publishes strict JSON input and output schemas through MCP `tools/list`. The evaluate metadata also documents the SI/WGS84 contract, positive-down `Depth`, local north-east-down component signs, input-order preservation, output units, model provenance, EGM96 behavior, stateless execution, batch limit, and atomic structured validation errors. Usage statistics are intentionally available only through REST and metrics; they are not registered as an MCP tool. `ServiceTest` verifies the published discovery metadata as well as the exclusion of usage statistics.
+
+Usage-counter snapshots are stored atomically in `/home/EarthGravity.UsageStatistics.json`, restored during startup, written every 30 seconds when changed, and flushed during graceful shutdown. They survive pod replacement when the `/home` persistent volume is retained; an abrupt process or node failure can lose changes since the last snapshot. Override the defaults with `EarthGravity__UsageStatisticsFile` and `EarthGravity__UsageStatisticsSaveIntervalSeconds`.
 
 ## ModelSharedOut generation
 
@@ -149,7 +151,7 @@ docker build -f Service/Dockerfile -t earthgravity-service .
 docker build -f WebApp/Dockerfile -t earthgravity-webapp .
 ```
 
-Both final images use the non-root `app` user from the .NET 8 runtime image and listen on container port 8080. The Service image includes the EGM96 model files.
+Both final images use the non-root `app` user from the .NET 8 runtime image and listen on container port 8080. The Service image includes the EGM96 model files and declares `/home` as its statistics data volume. Mount a named or managed volume at `/home` when running the service container so counters survive container replacement.
 
 GitHub Actions publishes the images to the `digiwells` organization on Docker Hub:
 
@@ -174,7 +176,7 @@ helm upgrade --install earthgravity-webapp WebApp/charts/osdcdrillingearthgravit
   --namespace earthgravity
 ```
 
-Both charts follow the established `GravitationalField` chart pattern: one replica, the Docker Hub `stable` tag with `Always` pull policy, DigiWells ingress hosts, an optional HPA, optional health probes, configurable security/resources, and a Helm connection test. EarthGravity is stateless, so the Service deliberately omits the original persistence volume. The charts do not create PodDisruptionBudgets and therefore do not require `policy/v1` permissions. The WebApp retains `ClientIP` affinity because server-side Blazor maintains a circuit per user.
+Both charts follow the established `GravitationalField` chart pattern: one replica, the Docker Hub `stable` tag with `Always` pull policy, DigiWells ingress hosts, an optional HPA, optional health probes, configurable security/resources, and a Helm connection test. The Service chart creates a PVC mounted at `/home` by default for the usage-statistics snapshot; set `persistence.existingClaim` to reuse a managed volume. Keep the Service at one writer replica while using the JSON snapshot. The charts do not create PodDisruptionBudgets and therefore do not require `policy/v1` permissions. The WebApp retains `ClientIP` affinity because server-side Blazor maintains a circuit per user.
 
 The charts pull their default images from `docker.io/digiwells`. No pull secret is required when the Docker Hub repositories are public. For private repositories, create a Kubernetes Docker-registry secret and pass it to both charts, for example with `--set 'imagePullSecrets[0].name=dockerhub-credentials'`.
 
