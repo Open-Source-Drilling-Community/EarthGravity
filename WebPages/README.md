@@ -1,5 +1,7 @@
 # OSDC.Drilling.EarthGravity.WebPages
 
+This release targets MudBlazor 9.9.0 and the matching OSDC shared web component packages.
+
 **Author:** Eric Cayeux  
 **Company:** NORCE Research
 

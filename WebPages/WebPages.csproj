@@ -16,11 +16,12 @@
     <RepositoryUrl>https://github.com/Open-Source-Drilling-Community/EarthGravity</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="8.14.0" />
-    <PackageReference Include="OSDC.DotnetLibraries.Drilling.WebAppUtils" Version="1.1.2" />
-    <PackageReference Include="OSDC.UnitConversion.DrillingRazorMudComponents" Version="3.3.47" />
+    <PackageReference Include="MudBlazor" Version="9.9.0" />
+    <PackageReference Include="OSDC.DotnetLibraries.Drilling.WebAppUtils" Version="1.1.5" />
+    <PackageReference Include="OSDC.UnitConversion.DrillingRazorMudComponents" Version="3.4.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ModelSharedOut\EarthGravityMergedModel.cs" Link="GeneratedDtos\EarthGravityMergedModel.cs" />
