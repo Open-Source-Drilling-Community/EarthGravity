@@ -61,7 +61,9 @@
                 <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Down" ReadOnly="true" SIValueNullable="result.Gravity.Down" /></MudItem>
                 <MudItem xs="12" md="3"><MudInputWithUnitAdornment QuantityName="AccelerationDrilling" QuantityLabel="Magnitude" ReadOnly="true" SIValueNullable="result.Gravity.Magnitude" /></MudItem>
             </MudGrid>
-            <MudInputWithUnitAdornment Class="mt-4" QuantityName="EarthGravityPotential" QuantityLabel="Total gravity potential" ReadOnly="true" SIValueNullable="result.Gravity.TotalPotential" />
+            <div class="mt-4">
+                <MudInputWithUnitAdornment QuantityName="EarthGravityPotential" QuantityLabel="Total gravity potential" ReadOnly="true" SIValueNullable="result.Gravity.TotalPotential" />
+            </div>
             <MudText Typo="Typo.caption">Model: @model?.Name (@model?.ID), degree/order @model?.Degree/@model?.Order</MudText>
         }
     </MudPaper>
