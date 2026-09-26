@@ -25,7 +25,7 @@ jobs:
         run: dotnet build Service/Service.csproj --configuration Release --no-restore
       - name: Regenerate distributed shared model
         run: |
-          dotnet swagger tofile --output ModelSharedOut/json-schemas/EarthGravityFullName.json Service/bin/Release/net8.0/Service.dll v1
+          dotnet msbuild Service/Service.csproj -t:ExportSwaggerJson -p:Configuration=Release
           dotnet run --project ModelSharedOut/ModelSharedOut.csproj --configuration Release
       - name: Verify generated contracts are committed
         run: git diff --exit-code -- ModelSharedOut/EarthGravityMergedModel.cs ModelSharedOut/json-schemas/EarthGravityFullName.json Service/wwwroot/json-schema/EarthGravityMergedModel.json

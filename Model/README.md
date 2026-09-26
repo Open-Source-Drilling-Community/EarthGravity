@@ -37,3 +37,7 @@ From the repository root:
 dotnet build Model/Model.csproj -c Release
 dotnet test ModelTest/ModelTest.csproj -c Release
 ```
+
+## Semantic declarations
+
+`Semantic` attributes bind model classes and properties to the shared OSDC semantic catalogue 0.1.0. Concept specialization, physical quantity, field role and reference convention are distinct relationships. REST and MCP use these same attributes; they do not change JSON payloads or calculation behavior. Initial vocabulary entries remain Proposed pending curation. Quantity names match WebPages: PlaneAngleGeodesic, DepthDrilling and AccelerationDrilling. TotalPotential binds to EarthGravityPotential in UnitConversion 3.3.28, with SI m²/s² and meaningful display precision 0.01 m²/s². Display precision does not round API values or express model accuracy. Local development can use the sibling DotNetLibraries project; standalone consumers use its NuGet.

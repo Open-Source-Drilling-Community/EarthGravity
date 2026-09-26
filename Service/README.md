@@ -84,3 +84,11 @@ helm upgrade --install earthgravity-service Service/charts/osdcdrillingearthgrav
 The default Kubernetes Service name is `osdcearthgravityservice`, matching the WebApp production configuration. Following the original Gravitational Field chart, it defaults to one replica, the `stable` image tag, `Always` pull policy, enabled DigiWells ingress routes, optional probes/HPA, and configurable resources and security contexts. It creates a PVC mounted at `/home` by default; set `persistence.existingClaim` to reuse a managed volume. Keep one writer replica while using the JSON statistics snapshot. It creates no PodDisruptionBudget and requires no sticky session.
 
 The chart defaults to `docker.io/digiwells/osdcdrillingearthgravityservice`. If the Docker Hub repository is private, configure `imagePullSecrets` with a Kubernetes Docker-registry secret.
+
+## Semantic contract metadata
+
+The OpenAPI `SemanticSchemaFilter` and MCP schema annotations consume the same Model `Semantic` attributes from the shared catalogue. `x-osdc-semantic` includes the vocabulary version, stable URN, curation status, physical-quantity identity where resolved, SI representation, role and reference. OpenAPI reference properties use an allOf wrapper so their annotations are not ignored as $ref siblings. Data payloads and tool count are unchanged. The package is locally usable through the sibling project; standalone/Docker restore requires the catalogue NuGet 0.1.0 to be released or supplied by a configured private/local feed.
+
+## Swagger generation during builds
+
+Run `dotnet tool restore` from the repository root before the first Debug build. Debug builds export OpenAPI automatically using the Swagger CLI executable matching the service target framework (net8.0), even when building with a .NET 9 SDK. This avoids the local tool resolver selecting a net9.0 CLI that cannot load into the service runtime. After a Release build, run `dotnet msbuild Service/Service.csproj -t:ExportSwaggerJson -p:Configuration=Release` from the repository root. Keep `SwaggerCliVersion` in Service.csproj and the CLI version in `.config/dotnet-tools.json` aligned.

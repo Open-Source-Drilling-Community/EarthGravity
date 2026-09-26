@@ -1,3 +1,4 @@
+using OSDC.DotnetLibraries.Drilling.SemanticCatalogue;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using OSDC.Drilling.EarthGravity.Model;
@@ -9,7 +10,10 @@ public sealed class GetEarthGravityModelInfoMcpTool(EarthGravityEvaluator evalua
     public string Name => "earth_gravity_get_model_info";
     public string Description => "Returns the identity and provenance of the EGM96 model currently loaded by this service. The result properties are Name, ID, Publisher, ReleaseDate, DataVersion, Degree, Order, GeographicLibVersion, ReferenceEllipsoid, IncludesCentrifugalAcceleration, and CoefficientSHA256. Use these values to record calculation provenance, verify the exact coefficient file, or compare deployments; this tool performs no gravity calculation and persists nothing.";
     public JsonNode InputSchema { get; } = JsonNode.Parse("""{"type":"object","properties":{},"additionalProperties":false}""")!;
-    public JsonNode OutputSchema { get; } = JsonNode.Parse("""
+    public JsonNode OutputSchema { get; } = CreateOutputSchema();
+    private static JsonNode CreateOutputSchema()
+    {
+        var schema = JsonNode.Parse("""
     {
       "type": "object",
       "description": "Identity and reproducibility metadata for the loaded Earth gravity model.",
@@ -30,6 +34,9 @@ public sealed class GetEarthGravityModelInfoMcpTool(EarthGravityEvaluator evalua
       "additionalProperties": false
     }
     """)!;
+        SemanticMetadata.AnnotateObject((JsonObject)schema, typeof(EarthGravityModelInfo));
+        return schema;
+    }
     public Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken) =>
         Task.FromResult(JsonSerializer.SerializeToNode(evaluator.ModelInfo));
 }

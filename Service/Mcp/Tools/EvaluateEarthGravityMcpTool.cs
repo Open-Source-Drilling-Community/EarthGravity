@@ -1,3 +1,4 @@
+using OSDC.DotnetLibraries.Drilling.SemanticCatalogue;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Options;
@@ -23,10 +24,17 @@ public sealed class EvaluateEarthGravityMcpTool : IMcpTool
         statistics_ = statistics;
         maximumPositions_ = options.Value.MaximumPositionsPerRequest;
         InputSchema = CreateSchema(maximumPositions_);
+        SemanticMetadata.AnnotateObject((JsonObject)InputSchema, typeof(EarthGravityEvaluationRequest));
+        SemanticMetadata.AnnotateObject((JsonObject)InputSchema["properties"]!["Positions"]!["items"]!, typeof(EarthGravityPosition));
+        SemanticMetadata.AnnotateObject((JsonObject)OutputSchema, typeof(EarthGravityEvaluationResponse));
+        SemanticMetadata.AnnotateObject((JsonObject)OutputSchema["properties"]!["Samples"]!["items"]!, typeof(EarthGravitySample));
+        SemanticMetadata.AnnotateObject((JsonObject)OutputSchema["$defs"]!["position"]!, typeof(EarthGravityPosition));
+        SemanticMetadata.AnnotateObject((JsonObject)OutputSchema["$defs"]!["gravity"]!, typeof(EarthGravityVector));
+        SemanticMetadata.AnnotateObject((JsonObject)OutputSchema["$defs"]!["modelInfo"]!, typeof(EarthGravityModelInfo));
     }
 
     public string Name => "earth_gravity_evaluate";
-    public string Description => "Synchronously evaluates EGM96 total gravity for one or more WGS84 positions. This is stateless: results are returned by this call, and no calculation order or data is persisted. Latitude and Longitude MUST be SI radians. Depth MUST be SI metres, positive downward, with zero at the WGS84 reference ellipsoid; negative Depth is above the ellipsoid. Depth is not referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum. Samples preserve the input Positions order. Gravity components use the local north-east-down (NED) frame: North is positive northward, East is positive eastward, and Down is positive toward Earth and is therefore normally positive for gravity. Magnitude is non-negative. Acceleration and magnitude are in m/s²; TotalPotential is in m²/s². EGM96 total gravity includes centrifugal acceleration. Validation is atomic: one invalid position rejects the complete request with isError=true, no partial result, and structuredContent shaped as {Error, Message, Errors:[{PositionIndex, Property, Code, Message}]}; PositionIndex is zero-based for an item and null for a request-level error. Example request: {\"Positions\":[{\"Latitude\":1.0471975511965976,\"Longitude\":0.17453292519943295,\"Depth\":1000.0}]}.";
+    public string Description => "Publishes x-osdc-semantic model annotations from the versioned OSDC semantic catalogue. Synchronously evaluates EGM96 total gravity for one or more WGS84 positions. This is stateless: results are returned by this call, and no calculation order or data is persisted. Latitude and Longitude MUST be SI radians. Depth MUST be SI metres, positive downward, with zero at the WGS84 reference ellipsoid; negative Depth is above the ellipsoid. Depth is not referenced to mean sea level, a geoid, seabed, rig datum, or local vertical datum. Samples preserve the input Positions order. Gravity components use the local north-east-down (NED) frame: North is positive northward, East is positive eastward, and Down is positive toward Earth and is therefore normally positive for gravity. Magnitude is non-negative. Acceleration and magnitude are in m/s²; TotalPotential is in m²/s². EGM96 total gravity includes centrifugal acceleration. Validation is atomic: one invalid position rejects the complete request with isError=true, no partial result, and structuredContent shaped as {Error, Message, Errors:[{PositionIndex, Property, Code, Message}]}; PositionIndex is zero-based for an item and null for a request-level error. Example request: {\"Positions\":[{\"Latitude\":1.0471975511965976,\"Longitude\":0.17453292519943295,\"Depth\":1000.0}]}.";
     public JsonNode InputSchema { get; }
     public JsonNode OutputSchema { get; } = CreateOutputSchema();
 

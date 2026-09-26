@@ -7,6 +7,8 @@
 
 ## Local development
 
+The host references `OSDC.DotnetLibraries.General.DataManagement` 2.2.0 to satisfy the minimum version required by `OSDC.UnitConversion.DrillingRazorMudComponents` 3.4.3 through WebPages. An older direct reference causes NuGet downgrade error NU1605.
+
 The launch profile listens on:
 
 - HTTPS: `https://localhost:58945`

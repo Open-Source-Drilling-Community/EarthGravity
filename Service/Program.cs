@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen(configuration =>
         Description = "Stateless EGM96 evaluation using OSDC SI and WGS84 conventions."
     });
     configuration.CustomSchemaIds(type => type.FullName);
+    configuration.SchemaFilter<SemanticSchemaFilter>();
     foreach (string assemblyName in new[] { "Service", "Model" })
     {
         string xmlPath = Path.Combine(AppContext.BaseDirectory, assemblyName + ".xml");
