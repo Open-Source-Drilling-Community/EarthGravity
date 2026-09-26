@@ -139,16 +139,18 @@
             "description": "Positions to evaluate. The entire request is rejected when any item is invalid.",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:geodetic-position",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:input-positions",
               "reference": "urn:osdc:semantic:wgs84",
               "requiredContext": [
                 "reference ellipsoid",
                 "angular units",
-                "vertical sign"
+                "vertical sign",
+                "reference meridian",
+                "vertical representation and sign"
               ]
             }
           }
@@ -156,9 +158,9 @@
         "description": "A stateless synchronous EGM96 evaluation request.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
+          "catalogueVersion": "0.2.0",
           "concept": "urn:osdc:semantic:gravity-evaluation-request",
-          "curationStatus": "Proposed",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [ ]
         }
@@ -174,9 +176,9 @@
             ],
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:gravity-model-provenance",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:model-provenance",
               "requiredContext": [ ]
@@ -190,9 +192,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:gravity-sample",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:output-samples",
               "requiredContext": [ ]
@@ -202,9 +204,9 @@
         "description": "EGM96 results in the same order as the request positions.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
+          "catalogueVersion": "0.2.0",
           "concept": "urn:osdc:semantic:gravity-evaluation-response",
-          "curationStatus": "Proposed",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [ ]
         }
@@ -217,9 +219,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:model-name",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -229,9 +231,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:model-identifier",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -241,9 +243,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:model-publisher",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -253,9 +255,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:model-release-date",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -265,9 +267,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:coefficient-data-version",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -277,9 +279,9 @@
             "format": "int32",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:spherical-harmonic-degree",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -289,9 +291,9 @@
             "format": "int32",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:spherical-harmonic-order",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -301,9 +303,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:calculation-runtime-version",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -313,9 +315,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:reference-ellipsoid",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -324,9 +326,9 @@
             "type": "boolean",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:includes-centrifugal-acceleration",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -336,9 +338,9 @@
             "nullable": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:coefficient-sha256",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "requiredContext": [ ]
             }
@@ -347,9 +349,9 @@
         "description": "Identity and provenance of the Earth gravity model used for an evaluation.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
+          "catalogueVersion": "0.2.0",
           "concept": "urn:osdc:semantic:gravity-model-provenance",
-          "curationStatus": "Proposed",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [ ]
         }
@@ -365,9 +367,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:geodetic-latitude",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "reference": "urn:osdc:semantic:wgs84",
               "siUnit": "rad",
@@ -392,9 +394,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:geodetic-longitude",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "reference": "urn:osdc:semantic:wgs84",
               "siUnit": "rad",
@@ -417,9 +419,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:ellipsoidal-depth",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "reference": "urn:osdc:semantic:wgs84",
               "siUnit": "m",
@@ -440,14 +442,16 @@
         "description": "A position referred to the WGS84 reference ellipsoid and expressed using OSDC SI conventions.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
+          "catalogueVersion": "0.2.0",
           "concept": "urn:osdc:semantic:geodetic-position",
-          "curationStatus": "Proposed",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [
             "reference ellipsoid",
             "angular units",
-            "vertical sign"
+            "vertical sign",
+            "reference meridian",
+            "vertical representation and sign"
           ]
         }
       },
@@ -462,15 +466,17 @@
             ],
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:geodetic-position",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "reference": "urn:osdc:semantic:wgs84",
               "requiredContext": [
                 "reference ellipsoid",
                 "angular units",
-                "vertical sign"
+                "vertical sign",
+                "reference meridian",
+                "vertical representation and sign"
               ]
             }
           },
@@ -482,25 +488,24 @@
             ],
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
-              "concept": "urn:osdc:semantic:total-gravity-vector",
-              "curationStatus": "Proposed",
+              "catalogueVersion": "0.2.0",
+              "concept": "urn:osdc:semantic:gravity-evaluation-result",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "reference": "urn:osdc:semantic:local-north-east-down",
               "requiredContext": [
-                "local frame",
                 "position",
-                "model provenance"
+                "gravity model"
               ]
             }
           }
         },
-        "description": "An evaluated WGS84 position and its corresponding EGM96 gravity vector.",
+        "description": "An evaluated WGS84 position and its corresponding EGM96 acceleration and potential.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
+          "catalogueVersion": "0.2.0",
           "concept": "urn:osdc:semantic:gravity-sample",
-          "curationStatus": "Proposed",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [ ]
         }
@@ -557,9 +562,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:total-gravity-acceleration",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:north-component",
               "reference": "urn:osdc:semantic:local-north-east-down",
@@ -584,9 +589,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:total-gravity-acceleration",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:east-component",
               "reference": "urn:osdc:semantic:local-north-east-down",
@@ -611,9 +616,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:total-gravity-acceleration",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:down-component",
               "reference": "urn:osdc:semantic:local-north-east-down",
@@ -639,9 +644,9 @@
             "readOnly": true,
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:total-gravity-acceleration",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "role": "urn:osdc:semantic:vector-magnitude",
               "reference": "urn:osdc:semantic:local-north-east-down",
@@ -666,9 +671,9 @@
             "format": "double",
             "x-osdc-semantic": {
               "catalogue": "urn:osdc:semantic-catalogue",
-              "catalogueVersion": "0.1.0",
+              "catalogueVersion": "0.2.0",
               "concept": "urn:osdc:semantic:total-gravity-potential",
-              "curationStatus": "Proposed",
+              "curationStatus": "Reviewed",
               "assertionSource": "provider-model-attribute",
               "siUnit": "m^2/s^2",
               "physicalQuantityStatus": "resolved",
@@ -684,17 +689,16 @@
             }
           }
         },
-        "description": "Total gravity acceleration in the local north-east-down frame.",
+        "description": "Gravity evaluation result containing local north-east-down acceleration and scalar total potential.",
         "x-osdc-semantic": {
           "catalogue": "urn:osdc:semantic-catalogue",
-          "catalogueVersion": "0.1.0",
-          "concept": "urn:osdc:semantic:total-gravity-vector",
-          "curationStatus": "Proposed",
+          "catalogueVersion": "0.2.0",
+          "concept": "urn:osdc:semantic:gravity-evaluation-result",
+          "curationStatus": "Reviewed",
           "assertionSource": "provider-model-attribute",
           "requiredContext": [
-            "local frame",
             "position",
-            "model provenance"
+            "gravity model"
           ]
         }
       },
