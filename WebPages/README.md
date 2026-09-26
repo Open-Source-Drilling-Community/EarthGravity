@@ -78,3 +78,7 @@ dotnet pack WebPages/WebPages.csproj -c Release -p:PackageVersion=1.0.2
 The project currently generates a package during Release builds. The GitHub workflow publishes `OSDC.Drilling.EarthGravity.WebPages` for `webpages-v*` tags or a manually supplied version.
 
 Regenerate `ModelSharedOut` before building the package whenever the service API changes.
+
+## Semantic quantity alignment
+
+The shared catalogue bindings use the UI's existing PlaneAngleGeodesic, DepthDrilling and AccelerationDrilling choices. Depth is a position relative to the WGS84 ellipsoid, not an interval length. TotalPotential uses EarthGravityPotential through the standard read-only unit-adornment component. SI/Metric default to m²/s²; US/Imperial default to ft²/s². J/kg and ft·lbf/lbm are also available. The meaningful display precision is 0.01 m²/s², converted to the chosen unit; this is not model accuracy. Deploy a UnitConversion service containing the new quantity (3.3.28 or later) before enabling this UI update. EarthGravity API values remain in SI.

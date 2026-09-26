@@ -26,7 +26,7 @@ Run from the repository root after any public controller or `Model` change:
 ```powershell
 dotnet tool restore
 dotnet build Service/Service.csproj -c Release
-dotnet swagger tofile --output ModelSharedOut/json-schemas/EarthGravityFullName.json Service/bin/Release/net8.0/Service.dll v1
+dotnet msbuild Service/Service.csproj -t:ExportSwaggerJson -p:Configuration=Release
 dotnet run --project ModelSharedOut/ModelSharedOut.csproj -c Release
 ```
 
@@ -41,3 +41,7 @@ dotnet build ModelSharedOut/ModelSharedOut.csproj -c Release
 ```
 
 The project is both a generator executable and a compiled assembly containing the generated types for `ServiceTest`. `WebPages` links the generated source file directly, following the established solution pattern.
+
+## Semantic extensions
+
+The generated input and merged OpenAPI preserve `x-osdc-semantic` annotations from the provider model. These extensions characterize the schemas; generated C# clients continue to exchange the same data fields. Regenerate using the commands above after changing semantic bindings.

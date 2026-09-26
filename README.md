@@ -75,7 +75,7 @@ The generated NSwag client and DTOs are committed so `WebPages`, tests, and down
 ```powershell
 dotnet tool restore
 dotnet build Service/Service.csproj -c Release
-dotnet swagger tofile --output ModelSharedOut/json-schemas/EarthGravityFullName.json Service/bin/Release/net8.0/Service.dll v1
+dotnet msbuild Service/Service.csproj -t:ExportSwaggerJson -p:Configuration=Release
 dotnet run --project ModelSharedOut/ModelSharedOut.csproj -c Release
 ```
 
@@ -115,7 +115,7 @@ Both values are host roots with trailing slashes. `WebPages.APIUtils` appends `E
 
 ## Build, test, and run locally
 
-Requires the .NET 8 SDK.
+The projects target .NET 8. `global.json` allows the next installed major SDK when a compatible .NET 8 SDK is unavailable; SDK 9.0.317 is supported for local builds. Reload the solution if Visual Studio retains an SDK-resolution error after this setting changes.
 
 ```powershell
 dotnet tool restore
@@ -188,3 +188,11 @@ EGM96 and GeographicLib attribution is recorded in [THIRD-PARTY-NOTICES.md](THIR
 
 **Author:** Eric Cayeux  
 **Company:** NORCE Research
+
+## Shared semantic catalogue
+
+The Model now binds all evaluation, position, gravity and model-provenance properties to `OSDC.DotnetLibraries.Drilling.SemanticCatalogue` 0.1.0. Shared model attributes publish `x-osdc-semantic` declarations in both REST/OpenAPI and MCP schemas, including stable concept IDs, catalogue version, component roles, WGS84/NED references and authoritative physical-quantity identities. The initial vocabulary is marked Proposed for curation. Payload names, numeric values, validation and the three-tool MCP surface are unchanged.
+
+Latitude/longitude use PlaneAngleGeodesic, depth uses DepthDrilling, and acceleration uses AccelerationDrilling, matching WebPages. TotalPotential binds to EarthGravityPotential (UnitConversion 3.3.28): API values remain m²/s², while the UI supports the selected unit system and a meaningful display precision of 0.01 m²/s². This precision does not express model accuracy; potential is energy per mass, not energy density. Coordinate positions are not additive lengths. Spherical-harmonic Degree and Order are integers, not angular quantities.
+
+A sibling DotNetLibraries checkout supplies the catalogue project for local development. Set `UseLocalSemanticCatalogue=false` to verify the NuGet dependency instead. Standalone/CI/Docker builds consume package 0.1.0 and require it to be available on their configured feed. This change prepares and tests that package locally; it does not publish it. The Docker build context remains the EarthGravity repository because the release path uses NuGet, not a cross-repository source copy.

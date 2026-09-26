@@ -6,7 +6,9 @@
     This stateless microservice evaluates EGM96 total gravity at WGS84 positions. Public API values always use SI:
     latitude and longitude are radians, and depth is metres positive downward from the WGS84 reference ellipsoid.
     The web interface can display and accept other units through the OSDC unit-reference system while preserving SI
-    on the API boundary.
+    on the API boundary. Depth is a position, not an interval length. Gravity components are signed
+    north, east and down accelerations; their magnitude is nonnegative. Total potential includes both
+    gravitational and centrifugal contributions and is expressed in m²/s².
 </MudText>
 
 <MudGrid Class="mx-4 px-4 mt-2">
