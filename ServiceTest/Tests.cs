@@ -177,6 +177,21 @@ public class Tests
         Assert.That(modelInfo.GetProperty("outputSchema").GetProperty("properties").TryGetProperty("CoefficientSHA256", out _), Is.True);
     }
 
+    [Test]
+    public async Task SwaggerServerUrlResolvesToTheApiRoot()
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/EarthGravity/api/swagger/merged/swagger.json");
+        request.Headers.Add("X-Forwarded-Host", "example.test");
+        using HttpResponseMessage response = await httpClient_.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        using JsonDocument document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        string server = document.RootElement.GetProperty("servers")[0].GetProperty("url").GetString()!;
+        Assert.That(server, Is.EqualTo("https://example.test/EarthGravity/api"));
+        Assert.That(document.RootElement.GetProperty("paths").TryGetProperty("/EarthGravity", out _), Is.True);
+        using HttpResponseMessage entry = await httpClient_.GetAsync(new Uri(server + "/EarthGravity").AbsolutePath);
+        Assert.That(entry.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
+
     [TestCase("/EarthGravity/api/health/live")]
     [TestCase("/EarthGravity/api/health/ready")]
     [TestCase("/EarthGravity/api/metrics")]

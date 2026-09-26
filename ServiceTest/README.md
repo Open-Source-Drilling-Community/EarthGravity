@@ -25,3 +25,5 @@ Regenerate `ModelSharedOut` before testing if the public Service contract change
 `SemanticContractTests` compares every position, gravity-vector and model-provenance property across live generated OpenAPI, MCP metadata and the model-owned semantic attributes. Input depth is checked separately. Tests isolate statistics storage in temporary files. The existing numerical and generated-client tests continue to check unchanged payload behavior.
 
 Semantic contract checks cover both type and property annotations, the gravity-result binding, and retention of provider ordering/atomic-validation/range guarantees after catalogue 0.2.0 separates those policies from shared meanings.
+
+The merged OpenAPI document advertises the API root (`/EarthGravity/api`) as its server URL, excluding the schema route. Service tests verify that its advertised URL and operation path resolve to a working endpoint.

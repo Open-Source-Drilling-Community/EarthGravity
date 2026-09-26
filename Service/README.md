@@ -96,3 +96,5 @@ Run `dotnet tool restore` from the repository root before the first Debug build.
 Semantic catalogue 0.2.0 distinguishes the gravity evaluation result (acceleration vector plus scalar potential) from the vector itself. The existing DTO and JSON names remain unchanged. Geodetic position retains its ellipsoidal-depth representation under a generic parent. Input ranges, ordered output, atomic validation and synchronous/stateless evaluation remain EarthGravity provider guarantees. Publish the catalogue 0.2.0 NuGet before standalone CI or Docker builds; local sibling-source builds can validate this increment before publication.
 
 All 36 concepts in semantic catalogue 0.2.0 are Reviewed following approval on 2026-09-26; REST/MCP annotations publish that status. Future additions require separate curation.
+
+The merged OpenAPI document advertises the API root (`/EarthGravity/api`) as its server URL, excluding the schema route. Service tests verify that its advertised URL and operation path resolve to a working endpoint.
