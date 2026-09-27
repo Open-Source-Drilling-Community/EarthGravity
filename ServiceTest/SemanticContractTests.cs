@@ -46,6 +46,8 @@ public class SemanticContractTests
             (typeof(EarthGravityModelInfo), tools["earth_gravity_get_model_info"].OutputSchema) })
         {
             var rest = schemas[type.FullName!]!;
+            Assert.That(JsonNode.DeepEquals(rest[SemanticMetadata.ExtensionName], SemanticMetadata.For(type)), Is.True);
+            Assert.That(JsonNode.DeepEquals(mcpSchema[SemanticMetadata.ExtensionName], SemanticMetadata.For(type)), Is.True);
             foreach (var property in type.GetProperties())
             {
                 var expected = SemanticMetadata.For(property);
@@ -57,5 +59,10 @@ public class SemanticContractTests
         var inputDepth = evaluate.InputSchema["properties"]!["Positions"]!["items"]!["properties"]!["Depth"]![SemanticMetadata.ExtensionName];
         Assert.That(JsonNode.DeepEquals(inputDepth, SemanticMetadata.For(typeof(EarthGravityPosition).GetProperty("Depth")!)), Is.True);
         Assert.That(tools, Has.Count.EqualTo(3));
+        Assert.That(SemanticMetadata.For(typeof(EarthGravityVector))!["concept"]!.GetValue<string>(), Is.EqualTo(Concepts.GravityResult));
+        Assert.That(SemanticMetadata.For(typeof(EarthGravitySample).GetProperty("Gravity")!)!["concept"]!.GetValue<string>(), Is.EqualTo(Concepts.GravityResult));
+        Assert.That(evaluate.Description, Does.Contain("Validation is atomic"));
+        Assert.That(evaluate.Description, Does.Contain("Samples preserve the input Positions order"));
+        Assert.That(evaluate.InputSchema["properties"]!["Positions"]!["items"]!["properties"]!["Latitude"]!["minimum"], Is.Not.Null);
     }
 }

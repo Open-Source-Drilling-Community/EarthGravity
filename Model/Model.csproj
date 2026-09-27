@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -13,7 +13,8 @@
     <UseLocalSemanticCatalogue Condition="'$(UseLocalSemanticCatalogue)' == '' and Exists('../../DotNetLibraries/OSDC.DotnetLibraries.General/OSDC.DotnetLibraries.Drilling.SemanticCatalogue/OSDC.DotnetLibraries.Drilling.SemanticCatalogue.csproj')">true</UseLocalSemanticCatalogue>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Condition="'$(UseLocalSemanticCatalogue)' != 'true'" Include="OSDC.DotnetLibraries.Drilling.SemanticCatalogue" Version="0.1.0" />
+    <ProjectReference Condition="'$(UseLocalSemanticCatalogue)' == 'true'" Include="../../DotNetLibraries/OSDC.DotnetLibraries.General/OSDC.DotnetLibraries.Drilling.SemanticCatalogue/OSDC.DotnetLibraries.Drilling.SemanticCatalogue.csproj" />
+    <PackageReference Condition="'$(UseLocalSemanticCatalogue)' != 'true'" Include="OSDC.DotnetLibraries.Drilling.SemanticCatalogue" Version="0.2.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GeographicLib.NET" Version="2.3.2" />

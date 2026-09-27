@@ -1,8 +1,8 @@
 using OSDC.DotnetLibraries.Drilling.SemanticCatalogue;
 namespace OSDC.Drilling.EarthGravity.Model;
 
-/// <summary>Total gravity acceleration in the local north-east-down frame.</summary>
-[Semantic(Concepts.GravityVector)]
+/// <summary>Gravity evaluation result containing local north-east-down acceleration and scalar total potential.</summary>
+[Semantic(Concepts.GravityResult)]
 public class EarthGravityVector
 {
     /// <summary>Northerly acceleration component in SI metres per second squared.</summary>

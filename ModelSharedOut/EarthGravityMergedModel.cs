@@ -657,7 +657,7 @@ namespace OSDC.Drilling.EarthGravity.ModelShared
     }
 
     /// <summary>
-    /// An evaluated WGS84 position and its corresponding EGM96 gravity vector.
+    /// An evaluated WGS84 position and its corresponding EGM96 acceleration and potential.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class EarthGravitySample
@@ -735,7 +735,7 @@ namespace OSDC.Drilling.EarthGravity.ModelShared
     }
 
     /// <summary>
-    /// Total gravity acceleration in the local north-east-down frame.
+    /// Gravity evaluation result containing local north-east-down acceleration and scalar total potential.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class EarthGravityVector
