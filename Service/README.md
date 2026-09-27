@@ -87,13 +87,13 @@ The chart defaults to `docker.io/digiwells/osdcdrillingearthgravityservice`. If 
 
 ## Semantic contract metadata
 
-The OpenAPI `SemanticSchemaFilter` and MCP schema annotations consume the same Model `Semantic` attributes from the shared catalogue. `x-osdc-semantic` includes the vocabulary version, stable URN, curation status, physical-quantity identity where resolved, SI representation, role and reference. OpenAPI reference properties use an allOf wrapper so their annotations are not ignored as $ref siblings. Data payloads and tool count are unchanged. Local, CI and Docker builds all restore SemanticCatalogue 0.3.0 from NuGet.
+The OpenAPI `SemanticSchemaFilter` and MCP schema annotations consume the same Model `Semantic` attributes from the shared catalogue. `x-osdc-semantic` includes the vocabulary version, stable URN, curation status, physical-quantity identity where resolved, SI representation, role and reference. OpenAPI reference properties use an allOf wrapper so their annotations are not ignored as $ref siblings. Data payloads and tool count are unchanged. Local, CI and Docker builds all restore SemanticCatalogue 0.4.0 from NuGet.
 
 ## Swagger generation during builds
 
 Run `dotnet tool restore` from the repository root before the first Debug build. Debug builds export OpenAPI automatically using the Swagger CLI executable matching the service target framework (net8.0), even when building with a .NET 9 SDK. This avoids the local tool resolver selecting a net9.0 CLI that cannot load into the service runtime. After a Release build, run `dotnet msbuild Service/Service.csproj -t:ExportSwaggerJson -p:Configuration=Release` from the repository root. Keep `SwaggerCliVersion` in Service.csproj and the CLI version in `.config/dotnet-tools.json` aligned.
 
-Semantic catalogue 0.2.0 distinguishes the gravity evaluation result (acceleration vector plus scalar potential) from the vector itself. The existing DTO and JSON names remain unchanged. Geodetic position retains its ellipsoidal-depth representation under a generic parent. Input ranges, ordered output, atomic validation and synchronous/stateless evaluation remain EarthGravity provider guarantees. All builds use the published SemanticCatalogue 0.3.0 NuGet package.
+Semantic catalogue 0.2.0 distinguishes the gravity evaluation result (acceleration vector plus scalar potential) from the vector itself. The existing DTO and JSON names remain unchanged. Geodetic position retains its ellipsoidal-depth representation under a generic parent. Input ranges, ordered output, atomic validation and synchronous/stateless evaluation remain EarthGravity provider guarantees. All builds use the published SemanticCatalogue 0.4.0 NuGet package.
 
 All 36 concepts in semantic catalogue 0.2.0 are Reviewed following approval on 2026-09-26; REST/MCP annotations publish that status. Future additions require separate curation.
 
