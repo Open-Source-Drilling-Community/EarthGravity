@@ -27,7 +27,8 @@ internal sealed class McpServerToolAdapter : McpServerTool
             Name = tool.Name,
             Description = tool.Description,
             InputSchema = JsonSerializer.SerializeToElement(tool.InputSchema, JsonOptions),
-            OutputSchema = JsonSerializer.SerializeToElement(tool.OutputSchema, JsonOptions)
+            OutputSchema = JsonSerializer.SerializeToElement(tool.OutputSchema, JsonOptions),
+            Annotations = new ToolAnnotations { ReadOnlyHint = true, DestructiveHint = false, IdempotentHint = true, OpenWorldHint = false }
         };
     }
 

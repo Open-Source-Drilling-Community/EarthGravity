@@ -98,3 +98,5 @@ Semantic catalogue 0.2.0 distinguishes the gravity evaluation result (accelerati
 All 36 concepts in semantic catalogue 0.2.0 are Reviewed following approval on 2026-09-26; REST/MCP annotations publish that status. Future additions require separate curation.
 
 The merged OpenAPI document advertises the API root (`/EarthGravity/api`) as its server URL, excluding the schema route. Service tests verify that its advertised URL and operation path resolve to a working endpoint.
+
+All registered stateless MCP tools now explicitly publish all four behavior hints: read-only, idempotent, non-destructive and closed-world. The tools/list regression checks every hint. After deployment, rediscover these contracts in consuming DrillWeaver installations; redeployment alone does not refresh their saved catalogue.

@@ -200,3 +200,5 @@ A sibling DotNetLibraries checkout supplies the catalogue project for local deve
 Semantic catalogue 0.2.0 distinguishes the gravity evaluation result (acceleration vector plus scalar potential) from the vector itself. The existing DTO and JSON names remain unchanged. Geodetic position retains its ellipsoidal-depth representation under a generic parent. Input ranges, ordered output, atomic validation and synchronous/stateless evaluation remain EarthGravity provider guarantees. Publish the catalogue 0.2.0 NuGet before standalone CI or Docker builds; local sibling-source builds can validate this increment before publication.
 
 All 36 concepts in semantic catalogue 0.2.0 are Reviewed following approval on 2026-09-26; REST/MCP annotations publish that status. Future additions require separate curation.
+
+All registered stateless MCP tools now explicitly publish all four behavior hints: read-only, idempotent, non-destructive and closed-world. The tools/list regression checks every hint. After deployment, rediscover these contracts in consuming DrillWeaver installations; redeployment alone does not refresh their saved catalogue.

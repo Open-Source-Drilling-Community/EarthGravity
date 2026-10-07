@@ -27,3 +27,5 @@ Regenerate `ModelSharedOut` before testing if the public Service contract change
 Semantic contract checks cover both type and property annotations, the gravity-result binding, and retention of provider ordering/atomic-validation/range guarantees after catalogue 0.2.0 separates those policies from shared meanings.
 
 The merged OpenAPI document advertises the API root (`/EarthGravity/api`) as its server URL, excluding the schema route. Service tests verify that its advertised URL and operation path resolve to a working endpoint.
+
+All registered stateless MCP tools now explicitly publish all four behavior hints: read-only, idempotent, non-destructive and closed-world. The tools/list regression checks every hint. After deployment, rediscover these contracts in consuming DrillWeaver installations; redeployment alone does not refresh their saved catalogue.
