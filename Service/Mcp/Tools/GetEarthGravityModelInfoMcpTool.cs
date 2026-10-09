@@ -9,7 +9,7 @@ public sealed class GetEarthGravityModelInfoMcpTool(EarthGravityEvaluator evalua
 {
     public string Name => "earth_gravity_get_model_info";
     public string Description => "Returns the identity and provenance of the EGM96 model currently loaded by this service. The result properties are Name, ID, Publisher, ReleaseDate, DataVersion, Degree, Order, GeographicLibVersion, ReferenceEllipsoid, IncludesCentrifugalAcceleration, and CoefficientSHA256. Use these values to record calculation provenance, verify the exact coefficient file, or compare deployments; this tool performs no gravity calculation and persists nothing.";
-    public JsonNode InputSchema { get; } = JsonNode.Parse("""{"type":"object","properties":{},"additionalProperties":false}""")!;
+    public JsonNode InputSchema { get; } = CreateInputSchema();
     public JsonNode OutputSchema { get; } = CreateOutputSchema();
     private static JsonNode CreateOutputSchema()
     {
@@ -35,6 +35,12 @@ public sealed class GetEarthGravityModelInfoMcpTool(EarthGravityEvaluator evalua
     }
     """)!;
         SemanticMetadata.AnnotateObject((JsonObject)schema, typeof(EarthGravityModelInfo));
+        return schema;
+    }
+    private static JsonNode CreateInputSchema()
+    {
+        var schema = (JsonObject)JsonNode.Parse("""{"type":"object","properties":{},"additionalProperties":false}""")!;
+        schema[SemanticMetadata.ExtensionName] = SemanticMetadata.Create(Concepts.ModelInfo, Concepts.ResourceRetrieval, assertionSource: "provider-mcp-operation");
         return schema;
     }
     public Task<JsonNode?> InvokeAsync(JsonObject? arguments, CancellationToken cancellationToken) =>

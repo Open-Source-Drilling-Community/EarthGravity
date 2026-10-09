@@ -25,6 +25,7 @@ public sealed class EvaluateEarthGravityMcpTool : IMcpTool
         maximumPositions_ = options.Value.MaximumPositionsPerRequest;
         InputSchema = CreateSchema(maximumPositions_);
         SemanticMetadata.AnnotateObject((JsonObject)InputSchema, typeof(EarthGravityEvaluationRequest));
+        ((JsonObject)InputSchema)[SemanticMetadata.ExtensionName]!["role"] = Concepts.StatelessEvaluation;
         SemanticMetadata.AnnotateObject((JsonObject)InputSchema["properties"]!["Positions"]!["items"]!, typeof(EarthGravityPosition));
         SemanticMetadata.AnnotateObject((JsonObject)OutputSchema, typeof(EarthGravityEvaluationResponse));
         SemanticMetadata.AnnotateObject((JsonObject)OutputSchema["properties"]!["Samples"]!["items"]!, typeof(EarthGravitySample));

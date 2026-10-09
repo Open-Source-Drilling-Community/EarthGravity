@@ -36,6 +36,8 @@ public class SemanticContractTests
     {
         var tools = factory.Services.GetServices<IMcpTool>().ToDictionary(t => t.Name);
         var evaluate = tools["earth_gravity_evaluate"];
+        Assert.That(evaluate.InputSchema[SemanticMetadata.ExtensionName]!["role"]!.GetValue<string>(), Is.EqualTo(Concepts.StatelessEvaluation));
+        Assert.That(tools["earth_gravity_get_model_info"].InputSchema[SemanticMetadata.ExtensionName]!["role"]!.GetValue<string>(), Is.EqualTo(Concepts.ResourceRetrieval));
         var provider = factory.Services.GetRequiredService<ISwaggerProvider>();
         using var writer = new StringWriter(System.Globalization.CultureInfo.InvariantCulture);
         provider.GetSwagger("v1").SerializeAsV3(new OpenApiJsonWriter(writer));
