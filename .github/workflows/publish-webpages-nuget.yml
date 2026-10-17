@@ -13,6 +13,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions: { contents: read, id-token: write }
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
@@ -28,4 +29,10 @@ jobs:
           fi
       - run: dotnet restore WebPages/WebPages.csproj
       - run: dotnet build WebPages/WebPages.csproj --configuration Release --no-restore -p:PackageVersion=${{ env.PACKAGE_VERSION }}
-      - run: dotnet nuget push "WebPages/bin/Release/OSDC.Drilling.EarthGravity.WebPages.${{ env.PACKAGE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+      - name: Log in to NuGet.org with OIDC
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER || secrets.NUGET_USER }}
+
+      - run: dotnet nuget push "WebPages/bin/Release/OSDC.Drilling.EarthGravity.WebPages.${{ env.PACKAGE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --skip-duplicate
