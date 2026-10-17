@@ -82,3 +82,7 @@ Regenerate `ModelSharedOut` before building the package whenever the service API
 ## Semantic quantity alignment
 
 The shared catalogue bindings use the UI's existing PlaneAngleGeodesic, DepthDrilling and AccelerationDrilling choices. Depth is a position relative to the WGS84 ellipsoid, not an interval length. TotalPotential uses EarthGravityPotential through the standard read-only unit-adornment component. SI/Metric default to m²/s²; US/Imperial default to ft²/s². J/kg and ft·lbf/lbm are also available. The meaningful display precision is 0.01 m²/s², converted to the chosen unit; this is not model accuracy. Deploy a UnitConversion service containing the new quantity (3.3.28 or later) before enabling this UI update. EarthGravity API values remain in SI.
+
+## Package release 1.0.4
+
+This release packages the current WebPages and generated contracts. Update consuming WebApps to `OSDC.Drilling.EarthGravity.WebPages` version `1.0.4` after it is available on nuget.org.
